@@ -1,0 +1,6 @@
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\bin\Debug\Compiladores.exe.config
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\obj\Debug\Compiladores.csprojResolveAssemblyReference.cache
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\bin\Debug\Compiladores.exe
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\bin\Debug\Compiladores.pdb
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\obj\Debug\Compiladores.exe
+c:\users\dell\documents\visual studio 2013\Projects\Compiladores\Compiladores\obj\Debug\Compiladores.pdb
