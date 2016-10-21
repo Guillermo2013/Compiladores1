@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +26,8 @@ namespace Compiladores
         CorcheteDerecho,
         LlaveIzquierdo,
         LlaveDerecho,
+	   Directiva,
+        Punto,
         OperacionMultiplicacion,
         OperacionSuma,
         OperacionResta,
@@ -44,6 +46,38 @@ namespace Compiladores
         RelacionalIgual,
         RelacionalNoIgual,
         LogicosO,
-        LogicosY
-        }
+        LogicosY,
+        Comentario,
+        ComentarioBloque,
+        PalabraReservadaAuto,
+        PalabraReservadaBreak,
+        PalabraReservadaCase,
+        PalabraReservadaChar,
+        PalabraReservadaConst,
+        PalabraReservadaContinue,
+        PalabraReservadaDefault,
+        PalabraReservadaDo,
+        PalabraReservadaDouble,
+        PalabraReservadaElse,
+        PalabraReservadaEnum,
+        PalabraReservadaExtern,
+        PalabraReservadaFor,
+        PalabraReservadaFloat,
+        PalabraReservadaGoto,
+        PalabraReservadaIf,
+        PalabraReservadaInt,
+        PalabraReservadaLong,
+        PalabraReservadaRegister,
+        PalabraReservadaShort,
+        PalabraReservadaSigned,
+        PalabraReservadaSizeof,
+        PalabraReservadaStatic,
+        PalabraReservadaStruct,
+        PalabraReservadaSwitch,
+        PalabraReservadaTypedef,
+        PalabraReservadaUnsigned,
+        PalabraReservadaVoid,
+        PalabraReservadaVolatile,
+        PalabraReservadaWhile,
+       }
 }

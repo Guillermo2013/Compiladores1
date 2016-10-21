@@ -11,10 +11,11 @@ namespace Compiladores
         public TokenTipos Tipo { get; set; }
         public string Lexema { get; set; }
         public int Columna { get; set; }
+        public int Fila { get; set; }
 
         public override string ToString()
         {
-            return "Lexema: " + Lexema + " Tipo: " + Tipo + " Columna: " + Columna;
+            return ("Lexema: " + Lexema + " Tipo: " + Tipo + " Fila:" + Fila + " Columna: " + Columna);
         }
     }
 }
