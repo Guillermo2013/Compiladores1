@@ -10,9 +10,13 @@ namespace Compiladores
     {
         static void Main(string[] args)
         {
-            var lexico = new Lexico("cont cont1 12 print ");
+            string codigo=@"+ - / * + = - = /= *= %
+                             < > < = > = = = = ! =
+                            ++ -- &| ; , ! {[()]} ^ ~ && || =>";
+           
+            var lexico = new Lexico(codigo);
             var TokenActual = lexico.ObtenerSiguienteToken();
-            while (TokenActual.Tipo != TokenTipos.EndOfFile)
+            while (TokenActual.Tipo!= TokenTipos.EndOfFile)
             {
                 Console.WriteLine(TokenActual.ToString());
                 TokenActual = lexico.ObtenerSiguienteToken();
