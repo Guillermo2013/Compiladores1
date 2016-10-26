@@ -10,31 +10,18 @@ namespace Compiladores
     {
         static void Main(string[] args)
         {
-            string codigo= @"#include <stdio.h>
-
-                            int main()
-                            {
-                               int numero;
-                                //suma numero multiplos de 3
-                                /*que otro rollo yo 
-
-
-                                */
-                               for ( numero = -15 ; numero <= -3 ; numero += 3 )
-                               {
-                                 printf( "+'"'+"%d"+'"'+@", numero );
-                               }
-
-                               return 0;
-                            } ";
-           
-            var lexico = new Lexico(codigo);
+            string codigo= "";
+            System.IO.StreamReader file = new System.IO.StreamReader("C:/Users/Dell/Documents/GitHub/Compiladores1/Compiladores/test.txt");
+            codigo = file.ReadToEnd().ToString();
+            
+           var lexico = new Lexico(codigo);
             var TokenActual = lexico.ObtenerSiguienteToken();
-            while (TokenActual.Tipo!= TokenTipos.EndOfFile)
-            {
-                Console.WriteLine(TokenActual.ToString());
-                TokenActual = lexico.ObtenerSiguienteToken();
-            }
+           while (TokenActual.Tipo!= TokenTipos.EndOfFile)
+           {
+             Console.WriteLine(TokenActual.ToString());
+             TokenActual = lexico.ObtenerSiguienteToken();
+           }
+            
             Console.ReadKey();
         }
     }

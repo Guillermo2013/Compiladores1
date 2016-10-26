@@ -59,6 +59,7 @@ namespace Compiladores
             _simbolosAutoOperaciones.Add("-=", TokenTipos.AutoOperacionResta);
             _simbolosAutoOperaciones.Add("*=", TokenTipos.AutoOperacionMultiplicacion);
             _simbolosAutoOperaciones.Add("/=", TokenTipos.AutoOperacionDivision);
+            _simbolosAutoOperaciones.Add("->", TokenTipos.LogicaStruct);
             _simbolosAumentarODisminuir.Add("++", TokenTipos.AutoOperacionIncremento);
             _simbolosAumentarODisminuir.Add("--", TokenTipos.AutoOperacionDecremento);
             _simbolosRelacionales.Add(">", TokenTipos.RelacionalMayor);
@@ -99,6 +100,10 @@ namespace Compiladores
             _palabrasReservadas.Add("void", TokenTipos.PalabraReservadaVoid);
             _palabrasReservadas.Add("volatile", TokenTipos.PalabraReservadaVolatile);
             _palabrasReservadas.Add("while", TokenTipos.PalabraReservadaWhile);
+            _palabrasReservadas.Add("bool", TokenTipos.PalabraReservadaBool);
+            _palabrasReservadas.Add("true", TokenTipos.PalabraReservadaTrue);
+            _palabrasReservadas.Add("false", TokenTipos.PalabraReservadaFalse);
+            _palabrasReservadas.Add("date", TokenTipos.PalabraReservadaDate);
     
         }
 
@@ -123,7 +128,7 @@ namespace Compiladores
                 return new Token { Tipo = TokenTipos.EndOfFile };
             }
            
-            if (char.IsLetter(simboloTemporal))
+            if (char.IsLetter(simboloTemporal)||simboloTemporal=='_')
             {
                 lexema += simboloTemporal;
                 _cursor++;
@@ -133,8 +138,60 @@ namespace Compiladores
             {
                 lexema += simboloTemporal;
                 _cursor++;
-                return ObtenerDigito(lexema);
+                if (simboloTemporal == '0' && ObtenerSimboloActual()=='x')
+                {
+                    lexema += ObtenerSimboloActual();
+                    Token Hexagecimal = ObtenerDigitoHexagecimal(lexema);
+                    if (Hexagecimal != null)
+                       return Hexagecimal;
+                    throw new LexicoException("Símbolo inesperado encontrado");        
+                }
+                if (simboloTemporal == '0')
+                {
+                    lexema += ObtenerSimboloActual();
+                    Token Octal = ObtenerDigitoOctal(lexema);
+                    if (Octal != null)
+                        return Octal;
+                    throw new LexicoException("Símbolo inesperado encontrado"); 
+                }
+              
+                Token numeroEnteroToken= ObtenerDigito(lexema);
+                simboloTemporal = ObtenerSimboloActual();
+                if (simboloTemporal == '.')
+                {
+                     lexema+=simboloTemporal;
+                    _cursor++;
+                    lexema = "";
+                    Token numeroDecimalToken = ObtenerDigito(lexema);
+                    if (numeroDecimalToken.Lexema != "")
+                    {
+                        simboloTemporal = ObtenerSimboloActual();
+                        if (char.ToUpper(simboloTemporal) == 'E')
+                        {
+                            numeroDecimalToken.Lexema += simboloTemporal;
+                            _cursor++;
+                            Token numeroExponente = ObtenerDigito(lexema);
+                            numeroDecimalToken.Lexema += numeroExponente.Lexema;
+                        }
+                        simboloTemporal = ObtenerSimboloActual();
+                        if (!char.IsLetter(simboloTemporal) && simboloTemporal == ';' || char.IsWhiteSpace(simboloTemporal))
+                            return new Token { Tipo = TokenTipos.NumeroFloat, Lexema =numeroEnteroToken.Lexema+"."+numeroDecimalToken.Lexema, Columna = _columnaActual, Fila = _FilaActual };
+                    }
+                    throw new LexicoException("Símbolo inesperado encontrado"); 
+                }
+                if (char.ToUpper(simboloTemporal) == 'E')
+                {
+                    var ex = simboloTemporal;
+                    _cursor++;
+                    Token numeroExponente = ObtenerDigito("");
+                    simboloTemporal = ObtenerSimboloActual();
+                    if (!char.IsLetter(simboloTemporal) && simboloTemporal == ';' || char.IsWhiteSpace(simboloTemporal))
+                        return new Token { Tipo = TokenTipos.NumeroFloat, Lexema = numeroEnteroToken.Lexema + ex + numeroExponente.Lexema, Columna = _columnaActual, Fila = _FilaActual };
+
+                }
+                return numeroEnteroToken;
             }
+            
             if (_simbolosArimetricos.ContainsKey(simboloTemporal.ToString()))
             {
                 lexema += simboloTemporal;
@@ -147,10 +204,10 @@ namespace Compiladores
                 if (TokenDeIncrementoODecremento != null)
                     return TokenDeIncrementoODecremento;
                 if (lexema[0] == '/' && simboloTemporal == '/')
-                    return new Token { Tipo = TokenTipos.Comentario, Lexema = ObtenerTexto('\r'), Columna = _columnaActual, Fila = _FilaActual };
+                    return new Token { Tipo = TokenTipos.Comentario, Lexema = ObtenerTexto('\r','\r'), Columna = _columnaActual, Fila = _FilaActual };
                 if (lexema[0] == '/' && simboloTemporal == '*')
                 {
-                    var texto = ObtenerTexto('*');
+                    var texto = ObtenerTexto('*','/');
                     _columnaActual += 2;
                     if (_codigoFuente[_cursor++] == '*' && _codigoFuente[_cursor++] == '/')
                     {
@@ -183,16 +240,100 @@ namespace Compiladores
                     return TokenDeSimbolosRelacionales;
                 if (TokenDeSimbolosLogicos != null)
                     return TokenDeSimbolosLogicos;
-                return new Token { Tipo = _simbolos[lexema], Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+                if (lexema[0] == '#' && Char.IsNumber(simboloTemporal))
+                {
+                    lexema += simboloTemporal;
+                    _cursor++;
+                    var temporal = _cursor;
+                   
+                    if (char.IsNumber(_codigoFuente[temporal]) && _codigoFuente[temporal+1] == '-' && char.IsNumber(_codigoFuente[temporal+2]) && char.IsNumber(_codigoFuente[temporal+3])
+                        && _codigoFuente[temporal+4] == '-' && char.IsNumber(_codigoFuente[temporal+5]) && char.IsNumber(_codigoFuente[temporal+6]) && char.IsNumber(_codigoFuente[temporal+7])
+                        && char.IsNumber(_codigoFuente[temporal+8]) && _codigoFuente[temporal+9] == '#')
+                    {
+                        lexema+= _codigoFuente[_cursor];lexema+= _codigoFuente[_cursor+1] ;lexema+= _codigoFuente[_cursor+2] ;lexema+= _codigoFuente[_cursor+3] ;lexema+= _codigoFuente[_cursor+4];
+                        lexema += _codigoFuente[_cursor + 5]; lexema += _codigoFuente[_cursor + 6]; lexema += _codigoFuente[_cursor + 7]; lexema += _codigoFuente[_cursor + 8];
+                        lexema+= _codigoFuente[_cursor+9];
+                       
+                        _cursor += 10;
+                        _columnaActual += 10;
+                        simboloTemporal = ObtenerSimboloActual();
+                        if (!char.IsLetter(simboloTemporal) && simboloTemporal == ';' || char.IsWhiteSpace(simboloTemporal))
+                        return new Token { Tipo = TokenTipos.LiteralDate, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+                    }
+                }
+                if (_simbolos.ContainsKey(lexema))
+                    return new Token { Tipo = _simbolos[lexema], Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
             }
             if (simboloTemporal == '"')
             {
-                lexema += ObtenerTexto('"');
+                lexema += ObtenerTexto('"','"');
                 _cursor++;
-                return new Token { Tipo = TokenTipos.LiteralString, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+                if(lexema != "")
+                    return new Token { Tipo = TokenTipos.LiteralString, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
             }
-           
+
+            if (simboloTemporal == '\'')
+            {
+
+                lexema += ObtenerTexto('\'', '\'');
+                _cursor++;
+                simboloTemporal = ObtenerSimboloActual();
+                if (simboloTemporal == '\'')
+                {
+                    lexema += simboloTemporal;
+                 
+                }
+                if(lexema.Length==1)
+                    return new Token { Tipo = TokenTipos.LiteralChar, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+                if (lexema.Length > 1 && lexema.Contains('\\'))
+                {
+                    simboloTemporal = ObtenerSimboloActual();
+
+                    if (lexema == "\\a" || lexema == "\\b" || lexema == "\\f" || lexema == "\\n" || lexema == "\\r" || lexema == "\\t" || lexema == "\\v" || lexema == "\\'" || lexema == "\\\"" ||
+                        lexema == "\\\\" || lexema == "\\?")
+                    {
+                        _cursor++;
+                        return new Token { Tipo = TokenTipos.LiteralChar, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+                    }   
+
+                }
+               
+            }
             throw new LexicoException("Símbolo inesperado encontrado");
+        }
+
+        private Token ObtenerDigitoOctal(string lexema)
+        {
+            _cursor++;
+            var simboloTemporal = ObtenerSimboloActual();
+            while (simboloTemporal == '0' || simboloTemporal == '1' || simboloTemporal == '2' || simboloTemporal == '3'||
+                simboloTemporal == '4' || simboloTemporal == '5' || simboloTemporal == '6' || simboloTemporal == '7')
+            {
+                lexema += simboloTemporal;
+                _cursor++;
+                simboloTemporal = ObtenerSimboloActual();
+            }
+            if (char.IsLetter(simboloTemporal) || simboloTemporal != ';' && !char.IsWhiteSpace(simboloTemporal))
+                return null;
+            return new Token { Tipo = TokenTipos.NumeroOctal, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+            
+        }
+
+        private Token ObtenerDigitoHexagecimal(string lexema)
+        {
+            _cursor++;
+            var simboloTemporal = ObtenerSimboloActual();
+            while (char.IsDigit(simboloTemporal) || char.ToUpper(simboloTemporal) == 'A' || char.ToUpper(simboloTemporal) == 'B'
+                || char.ToUpper(simboloTemporal) == 'C' || char.ToUpper(simboloTemporal) == 'D' || char.ToUpper(simboloTemporal) == 'E' || char.ToUpper(simboloTemporal) == 'F')
+            {
+                lexema += simboloTemporal;
+                _cursor++;
+                simboloTemporal = ObtenerSimboloActual();
+            }
+            if (char.IsLetter(simboloTemporal) || simboloTemporal != ';'&& !char.IsWhiteSpace(simboloTemporal))
+                return null;
+            return new Token { Tipo = TokenTipos.NumeroHexagecimal, Lexema = lexema, Columna = _columnaActual, Fila = _FilaActual };
+            
         }
 
         private Token ObtenerDigito(string lexema)
@@ -209,7 +350,7 @@ namespace Compiladores
         private Token ObtenerIdentificador(string lexema)
         {
             var simboloTemporal = ObtenerSimboloActual();
-            while(char.IsLetterOrDigit(simboloTemporal)){
+            while(char.IsLetterOrDigit(simboloTemporal)||simboloTemporal == '_'){
                 lexema += simboloTemporal;
                 _cursor++;
                 simboloTemporal = ObtenerSimboloActual();
@@ -236,22 +377,48 @@ namespace Compiladores
             }
             return null;
         }
-        private string ObtenerTexto(char Delimitador)
+        private string ObtenerTexto(char Delimitador,char Delimitador2)
         {
             string _texto = "";
             _cursor++;
            var simboloTemporal = ObtenerSimboloActual();
-            while (simboloTemporal != Delimitador)
-            {
-                _texto += simboloTemporal;
-                _cursor++;
-                if(simboloTemporal == '\n'){
-                    _FilaActual++;
-                    _columnaActual = 0;
-                }
-                simboloTemporal = ObtenerSimboloActual();
-            }
+           if(Delimitador == Delimitador2)
+           while (simboloTemporal != Delimitador)
+               {
+                   _texto += simboloTemporal;
+                   _cursor++;
+                   if (simboloTemporal == '\n')
+                   {
+                       if (Delimitador == '"')
+                       {
+                           return null;
+                       }
+                       _FilaActual++;
+                       _columnaActual = 0;
+                   }
+                   simboloTemporal = ObtenerSimboloActual();
+               }
+               if (Delimitador != Delimitador2)
+               {
+                   while (true)
+                   {
+                       if (simboloTemporal == Delimitador && _codigoFuente[_cursor+1] == Delimitador2)
+                       {
+                           return _texto;
+                       }
+                       _texto += simboloTemporal;
+                       _cursor++;
+                       if (simboloTemporal == '\n')
+                       {
+                           _FilaActual++;
+                           _columnaActual = 0;
+                       }
+                       
 
+                       simboloTemporal = ObtenerSimboloActual();
+                   }
+               }
+          
             return _texto;
         }
     }

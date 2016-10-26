@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,14 +20,13 @@ namespace Compiladores
         OPorBit,
         NegacionPorBit,
         OExclusivoPorBit,
+
         ParentesisIzquierdo,
         ParentesisDerecho,
         CorcheteIzquierdo,
         CorcheteDerecho,
         LlaveIzquierdo,
         LlaveDerecho,
-	   Directiva,
-        Punto,
         OperacionMultiplicacion,
         OperacionSuma,
         OperacionResta,
@@ -79,5 +78,17 @@ namespace Compiladores
         PalabraReservadaVoid,
         PalabraReservadaVolatile,
         PalabraReservadaWhile,
-       }
+        Directiva,
+        Punto,
+        PalabraReservadaBool,
+        PalabraReservadaTrue,
+        PalabraReservadaFalse,
+        LogicaStruct,
+        PalabraReservadaDate,
+        LiteralChar,
+        NumeroHexagecimal,
+        NumeroOctal,
+        NumeroFloat,
+        LiteralDate
+    }
 }
