@@ -89,6 +89,8 @@ namespace Compiladores
         NumeroHexagecimal,
         NumeroOctal,
         NumeroFloat,
-        LiteralDate
+        LiteralDate,
+        DosPuntos,
+        PalabraReservadaPrintF
     }
 }
