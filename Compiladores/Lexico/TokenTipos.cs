@@ -91,6 +91,8 @@ namespace Compiladores
         NumeroFloat,
         LiteralDate,
         DosPuntos,
-        PalabraReservadaPrintF
+        PalabraReservadaPrintF,
+        PalabraReservadaString,
+        PalabraReservadaScanf
     }
 }

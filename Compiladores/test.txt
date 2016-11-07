@@ -1,11 +1,12 @@
-/*char *s = "My\tname\tis\tDave";
-char *s = "images\\foo.jpg";
+char *s = "My\tname\tis\tDave\'";
+char *s = "imagesfoo.jpg";
 
 char s* = "this is a \
 	     spanning multiple lines";
 
     score=(float)countr/countq*100-difftime(finaltime,initialtime)/3;
-
+/*score=(float)countr/countq*100-difftime(finaltime,initialtime)/3;
+*/
   int numbersAdded += 3.0;   
     int sum2 -= 23.45;  
     int hex = 0x3F7; 
@@ -17,7 +18,8 @@ char s* = "this is a \
     n--;
 
  '\''
-/*void gotoxy (int x, int y)
+
+void gotoxy (int x, int y)
         {
         coord.X = x;
         coord.Y = y; // X and Y coordinates
@@ -27,7 +29,7 @@ char s* = "this is a \
 123
 0xf
 0124567
-15.75
+15.75e3
 1.575E-1 
 1575e-2
 2.5e3
@@ -37,9 +39,9 @@ char s* = "this is a \
 bool
 true
 false 
-"es una prueba \a \b \n"
+"es una\" prueba \a \b \n"
 date
-#12-12-1222#
+#27-12-1933#
 array
 enum
 struct
@@ -67,3 +69,5 @@ const
 !=
 &&
 ||
+&
+|
