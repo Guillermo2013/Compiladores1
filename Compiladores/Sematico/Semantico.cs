@@ -35,8 +35,10 @@ namespace Compiladores.Sematico
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaStruct || _TokenActual.Tipo == TokenTipos.PalabraReservadaConst || _TokenActual.Tipo == TokenTipos.PalabraReservadaBreak ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaContinue || _TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum
-                   )
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaReturn || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento ||_TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
+                    ||_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion
+                    )
                 {
                     SpecialSentence();
                     ListOfSpecialSentences();
@@ -51,7 +53,7 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     SPECIALDECLARATION();
                 }
@@ -75,7 +77,10 @@ namespace Compiladores.Sematico
                 {
                     SWITCH();
                 }
-                else if (_TokenActual.Tipo == TokenTipos.Identificador)
+                else if (_TokenActual.Tipo == TokenTipos.Identificador
+                    ||_TokenActual.Tipo==TokenTipos.OperacionMultiplicacion
+                    ||_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento
+                    ||_TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
                 {
                     AssignmentOrFunctionCall();
                 }
@@ -105,10 +110,7 @@ namespace Compiladores.Sematico
                 {
                     Return();
                 }
-                else
-                {
-                    throw new SintanticoException("expresion no soportada");
-                }
+               
             }
 
             private void Return()
@@ -116,11 +118,13 @@ namespace Compiladores.Sematico
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaReturn)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    if (_TokenActual.Tipo == TokenTipos.FinalDeSentencia)
+                    EXPRESSION();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                     {
                         throw new SintanticoException("se esperaba ;");
 
                     }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                 }
             }
 
@@ -128,7 +132,7 @@ namespace Compiladores.Sematico
             {
                if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     GeneralDeclaration();
                     TypeOfDeclarationForFunction();
@@ -138,13 +142,8 @@ namespace Compiladores.Sematico
 
             private void TypeOfDeclarationForFunction()
             {
-                if (_TokenActual.Tipo == TokenTipos.Asignacion)
-                {
-                    ValueForId();
-                    MultiDeclaration();
-
-                }
-                else if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
+                
+                if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
                 {
                     IsArrayDeclaration();
                 }
@@ -154,7 +153,13 @@ namespace Compiladores.Sematico
                 }
                 else
                 {
-                    throw new SintanticoException("Se esperaba un ;");
+                    ValueForId();
+                    MultiDeclaration();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    {
+                        throw new SintanticoException("Se esperaba un ;");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                 }
             }
             private void ListOfSentences()
@@ -165,7 +170,9 @@ namespace Compiladores.Sematico
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaStruct || _TokenActual.Tipo == TokenTipos.PalabraReservadaConst || _TokenActual.Tipo == TokenTipos.PalabraReservadaBreak ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaContinue || _TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum 
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaVoid || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
+                    || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion
                    )
                 {
                     Sentence();
@@ -181,7 +188,7 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate|| _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     DECLARATION();
                 }
@@ -205,7 +212,10 @@ namespace Compiladores.Sematico
                 {
                    SWITCH();
                 }
-                else if (_TokenActual.Tipo == TokenTipos.Identificador)
+                else if (_TokenActual.Tipo == TokenTipos.Identificador
+                    || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
                 {
                     AssignmentOrFunctionCall();
                 }
@@ -234,9 +244,15 @@ namespace Compiladores.Sematico
                 {
                     ENUM();
                 }
-                else
+                else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaVoid)
                 {
-                    throw new SintanticoException("expresion no soportada");
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    if (_TokenActual.Tipo != TokenTipos.Identificador)
+                    {
+                        throw new SintanticoException("se esperaba un identificador");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsFunctionDeclaration();
                 }
             }
 
@@ -377,7 +393,7 @@ namespace Compiladores.Sematico
                    EXPRESSION();
                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                    {
-                       throw new SintanticoException("se esperaba un =");
+                       throw new SintanticoException("se esperaba un ;");
                    }
                    _TokenActual = lexico.ObtenerSiguienteToken();
                 }
@@ -471,8 +487,40 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.Identificador)
                 {
-                     _TokenActual = lexico.ObtenerSiguienteToken();
-                     ValueForPreId();
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();
+                    ArrowOrDot();
+                         ValueForPreId();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    {
+                        throw new SintanticoException("se espera ;");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+                else if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    if(_TokenActual.Tipo != TokenTipos.Identificador )
+                        throw new SintanticoException("se espera identificador");
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();
+                    ArrowOrDot();
+                        ValueForPointerId();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    {
+                        throw new SintanticoException("se espera ;");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+                else if (_TokenActual.Tipo == TokenTipos.AutoOperacionDecremento || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsPointer();
+                    if (_TokenActual.Tipo != TokenTipos.Identificador)
+                        throw new SintanticoException("se espera identificador");
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();
+                    ArrowOrDot();
                     if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                     {
                         throw new SintanticoException("se espera ;");
@@ -481,9 +529,72 @@ namespace Compiladores.Sematico
                 }
             }
 
+            private void ValueForPointerId()
+            {
+                if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
+                {
+                       _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+                else if (_TokenActual.Tipo == TokenTipos.Asignacion
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionSuma
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionResta
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionMultiplicacion
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionDivision
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionResiduo
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionOlogico
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionXor
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionYlogico
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda
+
+                    )
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    EXPRESSION();
+                }
+                else 
+                {
+                   
+                }
+            }
+
+            private void ArrowOrDot()
+            {
+                if (_TokenActual.Tipo == TokenTipos.Punto || _TokenActual.Tipo == TokenTipos.LogicaStruct)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    if (_TokenActual.Tipo != TokenTipos.Identificador)
+                    {
+                        throw new SintanticoException("se espera identificador");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();   
+                }
+                else
+                {
+
+                }
+            }
+
             private void ValueForPreId()
             {
-                if (_TokenActual.Tipo == TokenTipos.Asignacion)
+                if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+                else if (_TokenActual.Tipo == TokenTipos.Asignacion
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionSuma
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionResta
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionMultiplicacion
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionDivision
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionResiduo
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionOlogico
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionXor
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionYlogico
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha
+                    || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda
+                   
+                    )
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     EXPRESSION();
@@ -539,8 +650,28 @@ namespace Compiladores.Sematico
                 }
                 else
                 {
+                    EXPRESSION();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    { 
+                         throw new SintanticoException("es esperaba un ; ");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    EXPRESSION();
+                     if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    { 
+                         throw new SintanticoException("es esperaba un ; ");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                     
-                  
+                    EXPRESSION();
+                     if (_TokenActual.Tipo != TokenTipos.ParentesisDerecho)
+                    { 
+                         throw new SintanticoException("es esperaba un ) ");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    BlOCKFORLOOP();
+                    
+                    
                 }
             }
 
@@ -576,17 +707,26 @@ namespace Compiladores.Sematico
 
             private void BlOCKFORLOOP()
             {
-                if (_TokenActual.Tipo != TokenTipos.CorcheteIzquierdo)
+                if (_TokenActual.Tipo == TokenTipos.CorcheteIzquierdo)
                 {
-                    throw new SintanticoException("es esperaba { ");
+                     _TokenActual = lexico.ObtenerSiguienteToken();
+                     ListOfSentences();
+                        if (_TokenActual.Tipo != TokenTipos.CorcheteDerecho)
+                        {
+                                throw new SintanticoException("es esperaba } ");
+                       }
+                        _TokenActual = lexico.ObtenerSiguienteToken();
                 }
-                _TokenActual = lexico.ObtenerSiguienteToken();
-                ListOfSentences();
-                if (_TokenActual.Tipo != TokenTipos.CorcheteDerecho)
+                else if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
-                    throw new SintanticoException("es esperaba } ");
+                    
+                    Sentence();
                 }
-                _TokenActual = lexico.ObtenerSiguienteToken();
+               else if (_TokenActual.Tipo == TokenTipos.FinalDeSentencia)
+                    {
+                        _TokenActual = lexico.ObtenerSiguienteToken();
+                    }
+                    
             }
 
             private void SWITCH()
@@ -605,13 +745,13 @@ namespace Compiladores.Sematico
                         throw new SintanticoException("es esperaba ) ");
                     }
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    if (_TokenActual.Tipo != TokenTipos.LlaveIzquierdo)
+                    if (_TokenActual.Tipo != TokenTipos.CorcheteIzquierdo)
                     {
                         throw new SintanticoException("es esperaba { ");
                     }
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     ListOfCase();
-                    if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
+                    if (_TokenActual.Tipo != TokenTipos.CorcheteDerecho)
                     {
                         throw new SintanticoException("es esperaba } ");
                     }
@@ -647,11 +787,7 @@ namespace Compiladores.Sematico
                     }
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     ListOfSpecialSentences();
-                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
-                    {
-                        throw new SintanticoException("es esperaba ; ");
-                    }
-                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    
 
                 }
             }
@@ -738,6 +874,7 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaElse)
                 {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                     BlOCKFORIF();
                 }
                 else { }
@@ -766,7 +903,7 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                     _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                    _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     GeneralDeclaration();
                     TypeOfDeclaration();
@@ -776,7 +913,7 @@ namespace Compiladores.Sematico
             {
                 if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                       _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                      _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                      _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     IsPointer();
@@ -802,15 +939,11 @@ namespace Compiladores.Sematico
             }
             private void TypeOfDeclaration()
             {
-                if (_TokenActual.Tipo == TokenTipos.Asignacion)
-                {
-                    ValueForId();
-                    MultiDeclaration();
-                    
-                }
-                else if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
+                
+                 if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
                 {
                     IsArrayDeclaration();
+                    MultiDeclaration();
                 }
                 else if (_TokenActual.Tipo == TokenTipos.ParentesisIzquierdo)
                 {
@@ -822,7 +955,13 @@ namespace Compiladores.Sematico
                 }
                 else
                 {
-                    throw new SintanticoException("Se esperaba un ;");
+                   ValueForId();
+                    MultiDeclaration();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    {
+                            throw new SintanticoException("Se esperaba un ;");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                 }
             }
             private void ValueForId()
@@ -832,11 +971,7 @@ namespace Compiladores.Sematico
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                    EXPRESSION();
-                   if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
-                   {
-                       throw new SintanticoException("Se esperaba un ;");
-                   }
-                   _TokenActual = lexico.ObtenerSiguienteToken();
+                   
                 }
                 else//ValueForId-> epsilon
                 {
@@ -846,11 +981,10 @@ namespace Compiladores.Sematico
 
             private void MultiDeclaration()
             {
+                
                 if (_TokenActual.Tipo == TokenTipos.Separador)
                 {
-                   
                     OptionalId();
-                   
                 }
                 else
                 {
@@ -876,17 +1010,14 @@ namespace Compiladores.Sematico
                     throw new SintanticoException("Se esperaba un identificador");
                 }
                 _TokenActual = lexico.ObtenerSiguienteToken();
+                BidArray();
                 OtherIdOrValue();
             }
             private void OtherIdOrValue()
             {
-                if (_TokenActual.Tipo == TokenTipos.Asignacion)
-                {
-                    ValueForId();
+                   ValueForId();
                     OptionalId();
-                }else{
-
-                }
+                
             }
             private void IsArrayDeclaration()
             {
@@ -901,6 +1032,7 @@ namespace Compiladores.Sematico
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     BidArray();
                     OptionalInitOfArray();
+                    MultiDeclaration();
                     if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                     {
                         throw new SintanticoException("Se esperaba  ;");
@@ -925,7 +1057,13 @@ namespace Compiladores.Sematico
                 if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    SizeBidArray();
+                    if (_TokenActual.Tipo == TokenTipos.LlaveDerecho)
+                    {
+                        throw new SintanticoException("Se esperaba un factor");
+                    }
+                    
+                    EXPRESSION();
+                    
                     if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
                     {
                         throw new SintanticoException("Se esperaba  ]");
@@ -937,18 +1075,7 @@ namespace Compiladores.Sematico
 
                 }
             }
-            private void SizeBidArray()
-            {
-                if (_TokenActual.Tipo == TokenTipos.Identificador || _TokenActual.Tipo == TokenTipos.Numero || _TokenActual.Tipo == TokenTipos.NumeroFloat
-                    || _TokenActual.Tipo == TokenTipos.NumeroHexagecimal || _TokenActual.Tipo == TokenTipos.NumeroOctal)
-                {
-                    _TokenActual = lexico.ObtenerSiguienteToken();
-                }
-                else
-                {
-                    throw new SintanticoException("Se esperaba  un numero ");
-                }
-            }
+            
             private void OptionalInitOfArray()
             {
                 if (_TokenActual.Tipo == TokenTipos.Asignacion)
@@ -970,9 +1097,19 @@ namespace Compiladores.Sematico
             private void ListOfExpressions()
             {
                 EXPRESSION();
-                if (_TokenActual.Tipo == TokenTipos.Asignacion)
+                OptionalListOfExpressions();
+            }
+
+            private void OptionalListOfExpressions()
+            {
+                if (_TokenActual.Tipo == TokenTipos.Separador)
                 {
-                    OptionalExpression();
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    ListOfExpressions();
+                }
+                else
+                {
+
                 }
             }
             private void OptionalExpression()
@@ -998,14 +1135,38 @@ namespace Compiladores.Sematico
                         throw new SintanticoException("Se esperaba  un parentesis");
                     }
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    ListOfSpecialSentences();
+                    OptinalDeclaretionFuntion();
                 }
+            }
+
+            private void OptinalDeclaretionFuntion()
+            {
+                if (_TokenActual.Tipo == TokenTipos.CorcheteIzquierdo)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    ListOfSpecialSentences();
+                    if (_TokenActual.Tipo != TokenTipos.CorcheteDerecho)
+                    {
+                        throw new SintanticoException("Se esperaba  un parentesis");
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+                else if (_TokenActual.Tipo == TokenTipos.FinalDeSentencia)
+                {
+
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                }
+               
             }
             private void ParameterList()
             {
-                if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
-                       _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                       _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt 
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat 
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaChar 
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool 
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaString
+                    ||_TokenActual.Tipo == TokenTipos.PalabraReservadaDate
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     CHOOSE_ID_TYPE();
@@ -1026,6 +1187,7 @@ namespace Compiladores.Sematico
                         throw new SintanticoException("Se esperaba  un identificador");
                     }
                     _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();
                 }
                 else if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion)
                 {
@@ -1034,12 +1196,39 @@ namespace Compiladores.Sematico
                     {
                         throw new SintanticoException("Se esperaba  un identificador");
                     }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    IsArray();
+                   
                 }
-                else if (_TokenActual.Tipo != TokenTipos.Identificador)
+                else if (_TokenActual.Tipo == TokenTipos.Identificador)
                 {
-                    throw new SintanticoException("Se esperaba  un identificador");
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                     IsArray();
                 }
-                _TokenActual = lexico.ObtenerSiguienteToken();
+                 
+            }
+
+            private void IsArray()
+            {
+                if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
+                {
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    SizeForArray();
+                    if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
+                    {
+                            
+                    throw new SintanticoException("Se esperaba  un ]");
+                
+                    }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    if (_TokenActual.Tipo == TokenTipos.LlaveDerecho)
+                    {
+
+                        throw new SintanticoException("Se esperaba  un ]");
+
+                    }
+                    BidArray();
+                }
             }
 
             private void OptionaListOfParams()
@@ -1047,9 +1236,12 @@ namespace Compiladores.Sematico
                 if (_TokenActual.Tipo == TokenTipos.Separador)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
-                          _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                          _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
+                    if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt 
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat 
+                        ||_TokenActual.Tipo == TokenTipos.PalabraReservadaChar 
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool 
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaString 
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
                     {
                         _TokenActual = lexico.ObtenerSiguienteToken();
                         CHOOSE_ID_TYPE();
@@ -1057,7 +1249,7 @@ namespace Compiladores.Sematico
                     }
                     else
                     {
-                        throw new SintanticoException("Se esperaba tipo de variable");
+                      
                     }
                 }
             }
@@ -1073,12 +1265,33 @@ namespace Compiladores.Sematico
             }
 
             private void RelationalExpressionPrima()
-            {
-               if(_TokenActual.Tipo == TokenTipos.RelacionalMayor||_TokenActual.Tipo == TokenTipos.RelacionalMayorOIgual||_TokenActual.Tipo== TokenTipos.RelacionalMenor||
-                   _TokenActual.Tipo== TokenTipos.RelacionalMenorOIgual || _TokenActual.Tipo == TokenTipos.LogicosY||_TokenActual.Tipo== TokenTipos.LogicosO
-                ||_TokenActual.Tipo == TokenTipos.RelacionalIgual||_TokenActual.Tipo == TokenTipos.RelacionalNoIgual ){
+            {//falta <<=
+                if (_TokenActual.Tipo == TokenTipos.RelacionalMenor
+                   || _TokenActual.Tipo == TokenTipos.RelacionalMenorOIgual
+                   || _TokenActual.Tipo == TokenTipos.RelacionalMayor
+                   || _TokenActual.Tipo == TokenTipos.RelacionalMayorOIgual
+                   || _TokenActual.Tipo == TokenTipos.LogicosO
+                   || _TokenActual.Tipo == TokenTipos.LogicosY
+                   || _TokenActual.Tipo == TokenTipos.YPorBit
+                   || _TokenActual.Tipo == TokenTipos.CorrimientoDerecha
+                   || _TokenActual.Tipo == TokenTipos.CorrimientoIzquierda 
+                   || _TokenActual.Tipo == TokenTipos.RelacionalIgual
+                   || _TokenActual.Tipo == TokenTipos.RelacionalNoIgual
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionSuma
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionResta
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionMultiplicacion
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionDivision
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionResiduo
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionYlogico
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionXor
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionOlogico
+                   || _TokenActual.Tipo == TokenTipos.Negacion
+                   || _TokenActual.Tipo == TokenTipos.Asignacion
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha
+                   || _TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda
+                    ){
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                   ExpressionAdicion();
+                     ExpressionAdicion();
                     RelationalExpressionPrima();
                   
                 }
@@ -1095,7 +1308,8 @@ namespace Compiladores.Sematico
 
             private void ExpressionAdicionPrima()
             {
-                if (_TokenActual.Tipo == TokenTipos.OperacionSuma || _TokenActual.Tipo == TokenTipos.OperacionResta)
+                if (_TokenActual.Tipo == TokenTipos.OperacionSuma 
+                    || _TokenActual.Tipo == TokenTipos.OperacionResta)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     ExpressionMul();
@@ -1115,8 +1329,9 @@ namespace Compiladores.Sematico
 
             private void ExpressionMulPrima()
             {
-                if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion||_TokenActual.Tipo == TokenTipos.OperacionDivision||
-                    _TokenActual.Tipo == TokenTipos.OperacionDivisionResiduo)
+                if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion
+                    ||_TokenActual.Tipo == TokenTipos.OperacionDivision
+                    ||_TokenActual.Tipo == TokenTipos.OperacionDivisionResiduo)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     ExpressionUnary();
@@ -1131,32 +1346,42 @@ namespace Compiladores.Sematico
 
             private void ExpressionUnary()
             {
-                if(_TokenActual.Tipo == TokenTipos.NegacionPorBit||_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento||
-                   _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento|| _TokenActual.Tipo == TokenTipos.YPorBit||_TokenActual.Tipo == TokenTipos.OPorBit
-                   || _TokenActual.Tipo == TokenTipos.OExclusivoPorBit)
+                if(_TokenActual.Tipo == TokenTipos.NegacionPorBit
+                    ||_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento
+                    ||_TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
+                    || _TokenActual.Tipo == TokenTipos.YPorBit
+                    ||_TokenActual.Tipo == TokenTipos.OPorBit
+                   )
                {
                 UnaryOperators();
                 Factor();
                }
-                else if (_TokenActual.Tipo == TokenTipos.Identificador || _TokenActual.Tipo == TokenTipos.Numero
-                    || _TokenActual.Tipo == TokenTipos.Numero || _TokenActual.Tipo == TokenTipos.LiteralString||_TokenActual.Tipo==TokenTipos.PalabraReservadaFalse
-                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaTrue || _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
-                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.NumeroOctal ||_TokenActual.Tipo == TokenTipos.NumeroHexagecimal
-                    || _TokenActual.Tipo == TokenTipos.NumeroFloat || _TokenActual.Tipo == TokenTipos.ParentesisIzquierdo)
+                else if (_TokenActual.Tipo == TokenTipos.Identificador 
+                    || _TokenActual.Tipo == TokenTipos.Numero
+                    || _TokenActual.Tipo == TokenTipos.NumeroOctal
+                    || _TokenActual.Tipo == TokenTipos.NumeroHexagecimal
+                    || _TokenActual.Tipo == TokenTipos.NumeroFloat
+                    || _TokenActual.Tipo == TokenTipos.LiteralString
+                    || _TokenActual.Tipo ==TokenTipos.PalabraReservadaFalse
+                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaTrue 
+                    || _TokenActual.Tipo == TokenTipos.LiteralDate
+                    || _TokenActual.Tipo == TokenTipos.LiteralChar
+                    || _TokenActual.Tipo == TokenTipos.ParentesisIzquierdo
+                    )
                 {
                     Factor();
                 }
-                else
-                {
-                    throw new SintanticoException("Se esperaba una literal o un operador Unario");
-                }
+                
                 
             }
             private void UnaryOperators()
             {
-               if(_TokenActual.Tipo == TokenTipos.NegacionPorBit||_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento||
-                   _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento|| _TokenActual.Tipo == TokenTipos.YPorBit||_TokenActual.Tipo == TokenTipos.OPorBit
-                   || _TokenActual.Tipo == TokenTipos.OExclusivoPorBit)
+                if (_TokenActual.Tipo == TokenTipos.NegacionPorBit
+                     || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento
+                     || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
+                     || _TokenActual.Tipo == TokenTipos.YPorBit
+                     || _TokenActual.Tipo == TokenTipos.OPorBit
+                    )
                {
                    _TokenActual = lexico.ObtenerSiguienteToken();
                }               
@@ -1166,27 +1391,50 @@ namespace Compiladores.Sematico
                 if (_TokenActual.Tipo == TokenTipos.Identificador)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
+                    OptionalIncrementOrDecrement();
                     FactorFunctionOrArray();
+                       
+                    
                 }
                 else if (_TokenActual.Tipo == TokenTipos.Numero
-                   || _TokenActual.Tipo == TokenTipos.Numero || _TokenActual.Tipo == TokenTipos.LiteralString || _TokenActual.Tipo == TokenTipos.PalabraReservadaFalse
-                   || _TokenActual.Tipo == TokenTipos.PalabraReservadaTrue || _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
-                   || _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.NumeroOctal || _TokenActual.Tipo == TokenTipos.NumeroHexagecimal
-                   || _TokenActual.Tipo == TokenTipos.NumeroFloat)
+                        || _TokenActual.Tipo == TokenTipos.NumeroOctal
+                        || _TokenActual.Tipo == TokenTipos.NumeroHexagecimal
+                        || _TokenActual.Tipo == TokenTipos.NumeroFloat
+                        || _TokenActual.Tipo == TokenTipos.LiteralString
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaFalse
+                        || _TokenActual.Tipo == TokenTipos.PalabraReservadaTrue
+                        || _TokenActual.Tipo == TokenTipos.LiteralDate
+                        || _TokenActual.Tipo == TokenTipos.LiteralChar
+                        )
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                 }
                 else if(_TokenActual.Tipo == TokenTipos.ParentesisIzquierdo){
-                    EXPRESSION();
-                    if (_TokenActual.Tipo != TokenTipos.ParentesisDerecho)
-                    {
+                         _TokenActual = lexico.ObtenerSiguienteToken();
+                        EXPRESSION();
+                        if (_TokenActual.Tipo != TokenTipos.ParentesisDerecho)
+                         {
                         throw new SintanticoException("Se esperaba un }");
-                    }
+                        }
+                        _TokenActual = lexico.ObtenerSiguienteToken();
+
+                }
+                else
+                {
+                    throw new SintanticoException("Se esperaba un factor");
+                }
+                
+            }
+
+            private void OptionalIncrementOrDecrement()
+            {
+                if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
+                {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                 }
                 else
                 {
-                    throw new SintanticoException("Se esperaba que inicialice");
+
                 }
             }
 
@@ -1196,7 +1444,8 @@ namespace Compiladores.Sematico
                 {
                     CallFunction();
                 }
-                else if(_TokenActual.Tipo==TokenTipos.CorcheteIzquierdo || _TokenActual.Tipo == TokenTipos.LogicaStruct
+                else if(_TokenActual.Tipo==TokenTipos.LlaveIzquierdo
+                    || _TokenActual.Tipo == TokenTipos.LogicaStruct
                     ||_TokenActual.Tipo == TokenTipos.Punto){
                     IndexOrArrowAccess();
                 }
@@ -1224,17 +1473,18 @@ namespace Compiladores.Sematico
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
                     EXPRESSION();
-                    if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
+                    if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
                     {
                         throw new SintanticoException("Se esperaba ] ");
                     }
+                    _TokenActual = lexico.ObtenerSiguienteToken();
                     IndexOrArrowAccess();
                    
                 }
                 else if (_TokenActual.Tipo == TokenTipos.LogicaStruct || _TokenActual.Tipo == TokenTipos.Punto)
                 {
                     _TokenActual = lexico.ObtenerSiguienteToken();
-                    if (_TokenActual.Tipo == TokenTipos.Identificador)
+                    if (_TokenActual.Tipo != TokenTipos.Identificador)
                     {
                         throw new SintanticoException("Se esperaba identificador ");
                     }
@@ -1243,7 +1493,7 @@ namespace Compiladores.Sematico
                 }
                 else
                 {
-                    _TokenActual = lexico.ObtenerSiguienteToken();
+                    
                 }
 
             }
