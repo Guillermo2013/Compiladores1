@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Compiladores.Arbol
+namespace Compiladores.Arbol.BinaryOperador
 {
-    public abstract class ExpressionNode
+    public class SeparadorNode:BinaryOperatorNode
     {
 
-       
-
-        
     }
 }

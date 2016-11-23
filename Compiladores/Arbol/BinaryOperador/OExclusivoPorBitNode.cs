@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Compiladores.Arbol
+
+namespace Compiladores.Arbol.UnaryOperador
 {
-    public abstract class ExpressionNode
+    public class OExclusivoPorBitNode : BinaryOperatorNode
     {
-
-       
-
-        
     }
 }

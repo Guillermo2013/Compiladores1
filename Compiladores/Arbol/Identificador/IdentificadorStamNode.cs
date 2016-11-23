@@ -1,6 +1,4 @@
-﻿using Compiladores.Arbol.Accesores;
-using Compiladores.Arbol.BinaryOperador;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Arbol.Identificador
 {
-    public class IdentificadorNode : ExpressionNode
+   
+    public class IdentificadorStamNode : StatementNode
     {
         public string value { get; set; }
         public List<ExpressionNode> pointer;
-        public List<AccesoresNode> Asesores;
-        
+        public ExpressionNode inicializacion;
+        public string tipo;
     }
-    
 }

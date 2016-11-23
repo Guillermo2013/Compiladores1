@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Arbol.BinaryOperador
 {
-   public class OperacionRestaNode:BinaryOperatorNode
+    public class AssignStamentExpresionNode:StatementNode
     {
+        public StatementNode OperadorIquierdo;
+        public ExpressionNode expresion;
     }
 }

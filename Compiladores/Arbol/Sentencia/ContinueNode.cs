@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Compiladores.Arbol
+namespace Compiladores.Arbol.Sentencia
 {
-    public abstract class ExpressionNode
+    public class ContinueNode:StatementNode
     {
-
-       
-
-        
     }
 }

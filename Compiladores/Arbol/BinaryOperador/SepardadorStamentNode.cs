@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Compiladores.Arbol
+namespace Compiladores.Arbol.BinaryOperador
 {
-     public class AccesoresNode:StatementNode
+    public class SepardadorStamentNode: StatementNode
     {
         public string valor { get; set; }
         public StatementNode OperadorDerecho;

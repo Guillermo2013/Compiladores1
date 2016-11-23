@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Arbol.UnaryOperador
 {
-    public abstract class UnaryOperadorNode : ExpressionNode
+    public class YporBitStamentNode:StatementNode
     {
         public string Value;
-       public ExpressionNode Operando;
-       
-       
+        public StatementNode OperandoStament;
     }
 }

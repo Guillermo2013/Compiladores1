@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Arbol.BinaryOperador
 {
-    class LogicosYNode
+    public class LogicosYNode: BinaryOperatorNode
     {
     }
 }
