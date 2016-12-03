@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Arbol.Identificador;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Compiladores.Arbol.Accesores
 {
     public class PuntoNode : AccesoresNode
     {
+        public IdentificadorNode identificador { get; set; } 
     }
 }

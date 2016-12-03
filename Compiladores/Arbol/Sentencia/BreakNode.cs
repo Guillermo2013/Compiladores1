@@ -8,5 +8,9 @@ namespace Compiladores.Arbol.Sentencia
 {
     public class BreakNode:StatementNode
     {
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

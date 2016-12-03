@@ -8,5 +8,6 @@ namespace Compiladores.Arbol
 {
     public abstract class StatementNode
     {
+        public abstract void ValidSemantic();
     }
 }

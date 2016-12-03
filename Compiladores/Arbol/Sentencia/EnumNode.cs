@@ -10,5 +10,9 @@ namespace Compiladores.Arbol.Sentencia
     {
         public string identificador;
         public List<ExpressionNode> ListaEnum;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

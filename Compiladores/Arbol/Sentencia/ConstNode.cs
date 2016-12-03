@@ -12,5 +12,9 @@ namespace Compiladores.Arbol.Sentencia
         public List<ExpressionNode> pointer;
         public ExpressionNode expresion;
         public string Tipo;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,6 +12,9 @@ namespace Compiladores.Arbol.Sentencia
         public string literalString;
         public List<StatementNode> listadesentencias;
         public StatementNode declaracion;
-
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -8,5 +8,9 @@ namespace Compiladores.Arbol.Sentencia
 {
     public class ContinueNode:StatementNode
     {
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

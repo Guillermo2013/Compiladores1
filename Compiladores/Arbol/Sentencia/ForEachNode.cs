@@ -11,5 +11,9 @@ namespace Compiladores.Arbol.Sentencia
         public string inicializacionForEach;
         public string ListaForEach;
         public List<StatementNode> BloqueCondicionalForEach;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

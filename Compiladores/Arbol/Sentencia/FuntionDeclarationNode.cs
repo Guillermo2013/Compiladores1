@@ -10,5 +10,9 @@ namespace Compiladores.Arbol.Sentencia
     {
         public StatementNode paramentros;
         public List<StatementNode> declaracionDeFuncion;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

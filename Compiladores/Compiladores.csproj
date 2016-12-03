@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,16 +42,111 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lexico.cs" />
-    <Compile Include="LexicoException.cs" />
+    <Compile Include="Arbol\AccesoresNode.cs" />
+    <Compile Include="Arbol\Accesores\ArrayAsesorNode.cs" />
+    <Compile Include="Arbol\Accesores\LogicaStructNode.cs" />
+    <Compile Include="Arbol\Accesores\PuntoNode.cs" />
+    <Compile Include="Arbol\Sentencia\AssignStamentExpresionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\SeparadorNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\SepardadorStamentNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\YporBitBinaryOperadorNode.cs" />
+    <Compile Include="Arbol\BinaryOperatorNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AsignacionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionCorrimientoDerechaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionCorrimientoIzquierdaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionDivisionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionMultiplicacionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionOlogicoNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionResiduoNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionRestaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionSumaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionXorNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\AutoOperacionYlogicoNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\CorrimientoDerechaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\CorrimientoIzquierdaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\LogicosONode.cs" />
+    <Compile Include="Arbol\BinaryOperador\LogicosYNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OperacionDivisionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OperacionDivisionResiduoNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OperacionMultiplicacionNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OperacionRestaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OperacionSumaNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalIgualNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalMayorNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalMayorOIgualNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalMenorNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalMenorOIgualNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\RelacionalNoIgualNode.cs" />
+    <Compile Include="Arbol\ExpressionNode.cs" />
+    <Compile Include="Arbol\Identificador\IdentificadorArrayNode.cs" />
+    <Compile Include="Arbol\Identificador\IdentificadorNode.cs" />
+    <Compile Include="Arbol\Identificador\IdentificadorStamNode.cs" />
+    <Compile Include="Arbol\Sentencia\BreakNode.cs" />
+    <Compile Include="Arbol\Sentencia\CallFuntionNode.cs" />
+    <Compile Include="Arbol\Sentencia\CaseNode.cs" />
+    <Compile Include="Arbol\Sentencia\ConstNode.cs" />
+    <Compile Include="Arbol\Sentencia\ContinueNode.cs" />
+    <Compile Include="Arbol\Sentencia\DefaultCaseNode.cs" />
+    <Compile Include="Arbol\Sentencia\DoWhileNode.cs" />
+    <Compile Include="Arbol\Sentencia\EnumNode.cs" />
+    <Compile Include="Arbol\Sentencia\ExternNode.cs" />
+    <Compile Include="Arbol\Sentencia\ForEachNode.cs" />
+    <Compile Include="Arbol\Sentencia\ForNode.cs" />
+    <Compile Include="Arbol\Sentencia\FuntionDeclarationNode.cs" />
+    <Compile Include="Arbol\Sentencia\GeneralDeclarationNode.cs" />
+    <Compile Include="Arbol\Sentencia\IfNode.cs" />
+    <Compile Include="Arbol\Sentencia\IncludeNode.cs" />
+    <Compile Include="Arbol\Sentencia\ReturnNode.cs" />
+    <Compile Include="Arbol\Sentencia\StructNode.cs" />
+    <Compile Include="Arbol\Sentencia\SwitchNode.cs" />
+    <Compile Include="Arbol\Sentencia\WhileNode.cs" />
+    <Compile Include="Arbol\StatementNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralBooleanaNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralCharNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralDateNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralFloatNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralIntNode.cs" />
+    <Compile Include="Arbol\TiposDeDatos\LiteralStringNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\AutoOperacionDecrementoPos.cs" />
+    <Compile Include="Arbol\UnaryOperador\AutoOperacionDecrementoPre.cs" />
+    <Compile Include="Arbol\UnaryOperador\AutoOperacionIncrementoPos.cs" />
+    <Compile Include="Arbol\UnaryOperador\AutoOperacionIncrementoPre.cs" />
+    <Compile Include="Arbol\UnaryOperador\NegacionNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\NegacionPorBitNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OExclusivoPorBitNode.cs" />
+    <Compile Include="Arbol\BinaryOperador\OPorBitNode.cs" />
+    <Compile Include="Arbol\UnaryOperadorNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\NegativoNumeroNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\OperdadorMultiplicacionUnaryNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\YporBitNode.cs" />
+    <Compile Include="Arbol\UnaryOperador\YporBitStamentNode.cs" />
+    <Compile Include="Lexico\Lexico.cs" />
+    <Compile Include="Lexico\LexicoException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="TokenTipos.cs" />
+    <Compile Include="Lexico\Token.cs" />
+    <Compile Include="Lexico\TokenTipos.cs" />
+    <Compile Include="Semantico\SemanticoException.cs" />
+    <Compile Include="Semantico\TiposBases.cs" />
+    <Compile Include="Semantico\Tipos\ConstTipo.cs" />
+    <Compile Include="Semantico\Tipos\DateTipo.cs" />
+    <Compile Include="Semantico\Tipos\EnumTipo.cs" />
+    <Compile Include="Semantico\Tipos\FloatTipo.cs" />
+    <Compile Include="Semantico\Tipos\StructTipo.cs" />
+    <Compile Include="Semantico\Tipos\BooleanTipo.cs" />
+    <Compile Include="Semantico\Tipos\CharTipo.cs" />
+    <Compile Include="Semantico\Tipos\IntTipo.cs" />
+    <Compile Include="Semantico\Tipos\StringTipo.cs" />
+    <Compile Include="Sintactico\SintacticoClass.cs" />
+    <Compile Include="Sintactico\SintanticoException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="test.c" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

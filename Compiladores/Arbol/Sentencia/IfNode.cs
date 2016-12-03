@@ -11,5 +11,9 @@ namespace Compiladores.Arbol.Sentencia
         public ExpressionNode condicional;
         public List<StatementNode> BloqueCondicionalTrue;
         public List<StatementNode> BloqueCondicionalFalse;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

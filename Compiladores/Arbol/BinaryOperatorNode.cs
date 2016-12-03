@@ -8,7 +8,7 @@ namespace Compiladores.Arbol
 {
     public abstract class BinaryOperatorNode:ExpressionNode
     {
-        public string valor { get; set; }
+        public string operador { get; set; }
         public ExpressionNode OperadorDerecho ;
         public ExpressionNode OperadorIzquierdo;
     }

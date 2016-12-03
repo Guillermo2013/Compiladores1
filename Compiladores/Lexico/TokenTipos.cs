@@ -93,6 +93,18 @@ namespace Compiladores
         DosPuntos,
         PalabraReservadaPrintF,
         PalabraReservadaString,
-        PalabraReservadaScanf
+        PalabraReservadaScanf,
+        PalabraReservadaInclude,
+        PalabraReservadaReturn,
+        CorrimientoDerecha,
+        CorrimientoIzquierda,
+        AutoOperacionResiduo,
+        AutoOperacionYlogico,
+        AutoOperacionXor,
+        AutoOperacionOlogico,
+        AutoOperacionCorrimientoDerecha,
+        AutoOperacionCorrimientoIzquierda,
+        HtmlToken,
+        CcodeClose
     }
 }

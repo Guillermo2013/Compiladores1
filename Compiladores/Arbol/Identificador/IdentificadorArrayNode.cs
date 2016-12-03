@@ -13,6 +13,10 @@ namespace Compiladores.Arbol.Identificador
         public AccesoresNode unidimesionarioArray;
         public AccesoresNode BidimesionarioArray;
         public ExpressionNode inicializacion;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

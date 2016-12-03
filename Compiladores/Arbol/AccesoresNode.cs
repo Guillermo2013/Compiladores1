@@ -11,5 +11,9 @@ namespace Compiladores.Arbol
         public string valor { get; set; }
         public StatementNode OperadorDerecho;
         public StatementNode OperadorIzquierdo;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

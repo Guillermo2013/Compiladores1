@@ -8,7 +8,7 @@ namespace Compiladores.Arbol.Accesores
 {
     public class ArrayAsesorNode:AccesoresNode
     {
-        public ExpressionNode tamaño;
+        public ExpressionNode tamaño { get; set; }
         
     }
 }

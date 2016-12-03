@@ -14,5 +14,9 @@ namespace Compiladores.Arbol.Sentencia
         public List<ExpressionNode> pointer;
         public string variableNombre;
         public AsignacionNode asignacion;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

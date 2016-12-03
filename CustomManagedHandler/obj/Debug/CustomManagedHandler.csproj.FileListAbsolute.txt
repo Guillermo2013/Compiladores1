@@ -1,0 +1,5 @@
+C:\Users\Dell\Documents\Visual Studio 2013\Projects\Compiladores\CustomManagedHandler\bin\Debug\CustomManagedHandler.dll
+C:\Users\Dell\Documents\Visual Studio 2013\Projects\Compiladores\CustomManagedHandler\bin\Debug\CustomManagedHandler.pdb
+C:\Users\Dell\Documents\Visual Studio 2013\Projects\Compiladores\CustomManagedHandler\obj\Debug\CustomManagedHandler.dll
+C:\Users\Dell\Documents\Visual Studio 2013\Projects\Compiladores\CustomManagedHandler\obj\Debug\CustomManagedHandler.pdb
+C:\Users\Dell\Documents\Visual Studio 2013\Projects\Compiladores\CustomManagedHandler\obj\Debug\CustomManagedHandler.csprojResolveAssemblyReference.cache

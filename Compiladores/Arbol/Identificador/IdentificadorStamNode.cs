@@ -12,6 +12,11 @@ namespace Compiladores.Arbol.Identificador
         public string value { get; set; }
         public List<ExpressionNode> pointer;
         public ExpressionNode inicializacion;
+        public List<AccesoresNode> Asesores;
         public string tipo;
+        public override void ValidSemantic()
+        {
+            inicializacion.ValidateSemantic();
+        }
     }
 }

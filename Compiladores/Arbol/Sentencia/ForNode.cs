@@ -12,5 +12,9 @@ namespace Compiladores.Arbol.Sentencia
         public ExpressionNode ExpresionCondicional;
         public ExpressionNode ExpresionIncremento;
         public List<StatementNode> BloqueCondicionalFor;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Semantico;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,10 @@ namespace Compiladores.Arbol.UnaryOperador
 {
     public class NegacionPorBitNode : UnaryOperadorNode
     {
+        public override TiposBases ValidateSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
+
 }

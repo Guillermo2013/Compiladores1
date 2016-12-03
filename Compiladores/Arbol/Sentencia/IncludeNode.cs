@@ -9,5 +9,9 @@ namespace Compiladores.Arbol.Sentencia
     public class IncludeNode:StatementNode
     {
         public string direccion;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

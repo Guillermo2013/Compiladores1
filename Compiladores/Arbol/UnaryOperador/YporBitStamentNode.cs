@@ -10,5 +10,9 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public string Value;
         public StatementNode OperandoStament;
+        public override void ValidSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Semantico;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,10 @@ namespace Compiladores.Arbol.Sentencia
 {
     public class DefaultCaseNode:CaseNode
     {
-       public  List<StatementNode> BloqueCondicionalCase;
+       public  List<StatementNode> BloqueCondicionalCase{get; set;}
+       public override void ValidSemantic()
+       {
+           throw new NotImplementedException();
+       }
     }
 }
