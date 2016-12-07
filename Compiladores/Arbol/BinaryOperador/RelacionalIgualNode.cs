@@ -14,7 +14,7 @@ namespace Compiladores.Arbol.BinaryOperador
         {
             var Derecho = OperadorDerecho.ValidateSemantic();
             var Izquierdo = OperadorIzquierdo.ValidateSemantic();
-            if(Derecho is StructTipo || Izquierdo is StructTipo )
+            if (Derecho is StructTipo || Izquierdo is StructTipo || Derecho is EnumTipo || Izquierdo is EnumTipo || Derecho is VoidTipo || Izquierdo is VoidTipo)
                 throw new SemanticoException(" No se pude compara "+ Derecho + " con "+Izquierdo);
             return new BooleanTipo();
         }

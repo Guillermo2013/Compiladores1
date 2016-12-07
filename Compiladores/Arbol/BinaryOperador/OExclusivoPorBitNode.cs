@@ -12,7 +12,13 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var expresion1 = OperadorDerecho.ValidateSemantic();
+            var expresion2 = OperadorIzquierdo.ValidateSemantic();
+            if (expresion1 is BooleanTipo && expresion2 is BooleanTipo)
+                return expresion1;
+            if ((expresion1 is BooleanTipo || expresion2 is IntTipo) && (expresion2 is BooleanTipo || expresion1 is IntTipo))
+                return new IntTipo();
+            throw new SemanticoException("no se puede utilizar el O por bit en expesiones "+expresion1 +" y "+ expresion2);
         }
     }
 }

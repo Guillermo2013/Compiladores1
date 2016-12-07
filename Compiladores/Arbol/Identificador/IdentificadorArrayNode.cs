@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Compiladores.Arbol.Accesores;
 using Compiladores.Arbol.Sentencia;
+using Compiladores.Semantico.Tipos;
+using Compiladores.Semantico;
 namespace Compiladores.Arbol.Identificador
 {
    public class IdentificadorArrayNode:StatementNode
@@ -12,11 +14,18 @@ namespace Compiladores.Arbol.Identificador
         public GeneralDeclarationNode identificador;
         public AccesoresNode unidimesionarioArray;
         public AccesoresNode BidimesionarioArray;
-        public ExpressionNode inicializacion;
+        public List<ExpressionNode> inicializacion;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            identificador.ValidSemantic();
+            if (unidimesionarioArray!= null)
+                unidimesionarioArray.ValidSemantic();
+            if (BidimesionarioArray != null)
+                 BidimesionarioArray.ValidSemantic();
+            if (inicializacion != null)
+                inicializacion[0].ValidateSemantic();
         }
+        
 
     }
 }

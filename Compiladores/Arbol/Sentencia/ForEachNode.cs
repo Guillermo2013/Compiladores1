@@ -8,12 +8,14 @@ namespace Compiladores.Arbol.Sentencia
 {
     public class ForEachNode:StatementNode
     {
-        public string inicializacionForEach;
+        public GeneralDeclarationNode inicializacionForEach;
         public string ListaForEach;
         public List<StatementNode> BloqueCondicionalForEach;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            foreach (var sentencia in BloqueCondicionalForEach){
+                sentencia.ValidSemantic();
+            }
         }
     }
 }

@@ -13,7 +13,8 @@ namespace Compiladores.Arbol.BinaryOperador
         public StatementNode OperadorIzquierdo;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            OperadorDerecho.ValidSemantic();
+            OperadorIzquierdo.ValidSemantic();
         }
     }
 }

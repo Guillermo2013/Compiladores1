@@ -1,5 +1,4 @@
-﻿using Compiladores.Semantico;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Arbol.Sentencia
 {
-    public class CallFuntionNode:ExpressionNode
+    public class CallFunctionStamentNode:StatementNode
     {
         public string identificador;
         public List<ExpressionNode> ListaDeParametros;
-        public override TiposBases ValidateSemantic()
+
+        public override void ValidSemantic()
         {
-            return null;
+            throw new NotImplementedException();
         }
     }
 }

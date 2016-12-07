@@ -12,7 +12,7 @@ namespace Compiladores.Arbol.UnaryOperador
         public StatementNode OperandoStament;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            OperandoStament.ValidSemantic();
         }
     }
 }

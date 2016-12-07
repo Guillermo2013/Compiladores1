@@ -32,6 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -40,6 +42,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arbol\AccesoresNode.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="Arbol\Identificador\IdentificadorNode.cs" />
     <Compile Include="Arbol\Identificador\IdentificadorStamNode.cs" />
     <Compile Include="Arbol\Sentencia\BreakNode.cs" />
+    <Compile Include="Arbol\Sentencia\CallFunctionStamentNode.cs" />
     <Compile Include="Arbol\Sentencia\CallFuntionNode.cs" />
     <Compile Include="Arbol\Sentencia\CaseNode.cs" />
     <Compile Include="Arbol\Sentencia\ConstNode.cs" />
@@ -126,6 +130,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lexico\Token.cs" />
     <Compile Include="Lexico\TokenTipos.cs" />
+    <Compile Include="Semantico\ContenidoStack.cs" />
     <Compile Include="Semantico\SemanticoException.cs" />
     <Compile Include="Semantico\TiposBases.cs" />
     <Compile Include="Semantico\Tipos\ConstTipo.cs" />
@@ -137,6 +142,8 @@
     <Compile Include="Semantico\Tipos\CharTipo.cs" />
     <Compile Include="Semantico\Tipos\IntTipo.cs" />
     <Compile Include="Semantico\Tipos\StringTipo.cs" />
+    <Compile Include="Semantico\Tipos\TablaSimbolos.cs" />
+    <Compile Include="Semantico\Tipos\VoidTipo.cs" />
     <Compile Include="Sintactico\SintacticoClass.cs" />
     <Compile Include="Sintactico\SintanticoException.cs" />
   </ItemGroup>
@@ -146,7 +153,6 @@
   <ItemGroup>
     <Content Include="test.c" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

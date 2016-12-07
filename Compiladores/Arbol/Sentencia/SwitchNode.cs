@@ -12,7 +12,8 @@ namespace Compiladores.Arbol.Sentencia
         public List<CaseNode> BloqueCondicionalCase;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            foreach (var cases in BloqueCondicionalCase)
+                cases.ValidSemantic();
         }
     }
 }

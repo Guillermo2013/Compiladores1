@@ -13,7 +13,7 @@ namespace Compiladores.Arbol.Sentencia
         public List<StatementNode> bloqueStruct;
         public List<ExpressionNode> pointer;
         public string variableNombre;
-        public AsignacionNode asignacion;
+        public List<ExpressionNode> asignacion;
         public override void ValidSemantic()
         {
             throw new NotImplementedException();

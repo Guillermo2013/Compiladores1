@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Semantico.Tipos
 {
-    public class ConstTipo:TiposBases
+    public class VoidTipo:TiposBases
     {
-       
         public override string ToString()
         {
-            return "Const";
+            return "Void";
         }
     }
 }

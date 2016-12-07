@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Semantico.Tipos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,10 @@ namespace Compiladores.Arbol.Sentencia
         public List<ExpressionNode> ListaEnum;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            if (!TablaSimbolos.Instance.VariableExist(identificador))
+                TablaSimbolos.Instance.DeclareVariable(identificador, new EnumTipo());
+            else
+                throw new Sintactico.SintanticoException("la variable " + identificador + "ya existe ");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace Compiladores.Arbol.UnaryOperador
 {
     public class OperdadorMultiplicacionUnaryNode:UnaryOperadorNode
     {
+        public string value { get; set; }
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var operador = Operando.ValidateSemantic();
+            return operador;
         }
     }
 }

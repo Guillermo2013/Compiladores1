@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,13 @@ namespace Compiladores.Arbol.BinaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-           
+            var expresion2 = OperadorDerecho.ValidateSemantic();
+            if (OperadorIzquierdo == null)
+                return expresion2;
+            var expresion1 = OperadorIzquierdo.ValidateSemantic();
+            if (expresion1 == expresion2)
+                return expresion2;
+            return null;
         }
     }
 }

@@ -11,7 +11,9 @@ namespace Compiladores.Arbol.BinaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var izquierdo = OperadorDerecho.ValidateSemantic();
+            var derecho = OperadorIzquierdo.ValidateSemantic();
+            return null;
         }
     }
 }

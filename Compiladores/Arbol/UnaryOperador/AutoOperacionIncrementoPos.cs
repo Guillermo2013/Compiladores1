@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var expresion = Operando.ValidateSemantic();
+            if (expresion is StructTipo || expresion is ConstTipo || expresion is BooleanTipo || expresion is EnumTipo)
+                throw new Sintactico.SintanticoException("este tipo no puede incrementarse");
+            return expresion;
         }
     }
 }

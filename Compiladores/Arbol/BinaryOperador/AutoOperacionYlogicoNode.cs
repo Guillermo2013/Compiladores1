@@ -11,7 +11,15 @@ namespace Compiladores.Arbol.BinaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var expresion1 = OperadorDerecho.ValidateSemantic();
+            if (OperadorIzquierdo == null)
+                return expresion1;
+            var expresion2 = OperadorIzquierdo.ValidateSemantic();
+            if (expresion1 is BooleanTipo && expresion2 is BooleanTipo)
+                return expresion1;
+            if ((expresion1 is BooleanTipo || expresion2 is IntTipo) && (expresion2 is BooleanTipo || expresion1 is IntTipo))
+                return new IntTipo();
+            throw new SemanticoException("no se puede auto operacion o logico no se puede  " + expresion1 + " con " + expresion2);
         }
     }
 }

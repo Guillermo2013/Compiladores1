@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Compiladores.Semantico;
 namespace Compiladores
 {
     class Program
@@ -20,14 +20,12 @@ namespace Compiladores
              var Arbol = parser.Parser();
              foreach (var statementNode in Arbol)
              {
-                 Console.WriteLine(statementNode);
-                 statementNode.ValidSemantic();
+                statementNode.ValidSemantic();
+               
+                Console.WriteLine(statementNode);
              }
-            Console.ReadKey();
-
-              
-                
-
+             var s = ContenidoStack.InstanceStack.Stack;
+            Console.ReadKey();    
         }
     }
 }

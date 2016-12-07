@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +14,15 @@ namespace Compiladores.Arbol.Sentencia
         public List<StatementNode> BloqueCondicionalWhile;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+            var condicionalTipe = condicional.ValidateSemantic();
+            if (condicionalTipe is BooleanTipo)
+            {
+                ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
+                foreach (var sentencias in BloqueCondicionalWhile)
+                    sentencias.ValidSemantic();
+                ContenidoStack.InstanceStack.Stack.Pop();
+            }
+            throw new SemanticoException("la condiciona debe de ser tipo booleano");
         }
     }
 }

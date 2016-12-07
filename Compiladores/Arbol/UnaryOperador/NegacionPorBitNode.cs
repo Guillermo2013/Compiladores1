@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var operador = Operando.ValidateSemantic();
+            if(operador is IntTipo || operador is BooleanTipo|| operador is CharTipo)
+            return new IntTipo();
+            throw new Sintactico.SintanticoException(" no se puede negar el tipo "+ operador);
         }
     }
 

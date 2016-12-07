@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-            throw new NotImplementedException();
+            var expresion = Operando.ValidateSemantic();
+            if (expresion is IntTipo || expresion is FloatTipo)
+                return expresion;
+            throw new SemanticoException("se esperaba un literal numerica ");
         }
     }
 }
