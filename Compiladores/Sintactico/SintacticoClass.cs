@@ -401,6 +401,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.Identificador)
             {
+               
                 var enumItem = EnumItem();
                 var enumListItem = OptionalEnumItem();
                 enumListItem.Insert(0, enumItem);
@@ -408,7 +409,7 @@ namespace Compiladores.Sintactico
             }
             else
             {
-                return null;
+                return new  List<ExpressionNode>();
             }
         }
 
@@ -430,8 +431,9 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.Identificador)
             {
+                var identificador = _TokenActual;
                 ObtenerSiguienteTokenC();
-                return OptionalIndexPosition(_TokenActual);
+                return OptionalIndexPosition(identificador);
             }
             return null;
         }
@@ -456,7 +458,7 @@ namespace Compiladores.Sintactico
             }
             else
             {
-                return new IdentificadorNode { value = _TokenActual.Lexema };
+                return new IdentificadorNode { value = TokenActual.Lexema };
             }
         }
 
@@ -617,7 +619,14 @@ namespace Compiladores.Sintactico
 
         private List<StatementNode> MembersList()
         {
-            return DeclarationOfStruct();
+            if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
+                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+            {
+                return DeclarationOfStruct();
+            }
+            throw new SintanticoException("no es posible es tipo en un struct");
         }
 
         private List<StatementNode> DeclarationOfStruct()
@@ -1053,7 +1062,7 @@ namespace Compiladores.Sintactico
             }
             else
             {
-                return null;
+                return new List<CaseNode>();
             }
         }
 
@@ -1388,7 +1397,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("Se esperaba  ;");
                 }
                 ObtenerSiguienteTokenC();
-                return declaracion;
+                return multideclaracion;
             }
             return null;
         }
@@ -1498,7 +1507,7 @@ namespace Compiladores.Sintactico
                 }
                 ObtenerSiguienteTokenC();
                 var DeclarationFuntion = OptionalDeclaretionFuntion();
-                return new FuntionDeclarationNode { paramentros = Paramentros, declaracionDeFuncion = DeclarationFuntion };
+                return new FuntionDeclarationNode { paramentros = Paramentros, declaracionDeFuncion = DeclarationFuntion, identificador = declaracion };
             }
             return null;
         }

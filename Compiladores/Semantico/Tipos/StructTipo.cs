@@ -8,9 +8,11 @@ namespace Compiladores.Semantico.Tipos
 {
     public class StructTipo:TiposBases
     {
+        public Dictionary<string, TiposBases> elementos = new Dictionary<string, TiposBases>();
         public override string ToString()
         {
-            return "Struct";
+            return "struct";
         }
+        
     }
 }

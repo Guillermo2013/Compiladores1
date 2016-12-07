@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Semantico.Tipos
 {
-    public class ConstTipo:TiposBases
+    public class FuncionTipo:TiposBases
     {
-        public TiposBases tipo=null;
+        public List<TiposBases> listaParametros = new List<TiposBases>();
+        public TiposBases retorno = null;
+
         public override string ToString()
         {
-            return "Const";
+            return "Funcion";
         }
     }
 }

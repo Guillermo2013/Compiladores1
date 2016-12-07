@@ -133,10 +133,12 @@
     <Compile Include="Semantico\ContenidoStack.cs" />
     <Compile Include="Semantico\SemanticoException.cs" />
     <Compile Include="Semantico\TiposBases.cs" />
+    <Compile Include="Semantico\Tipos\ArrayTipo.cs" />
     <Compile Include="Semantico\Tipos\ConstTipo.cs" />
     <Compile Include="Semantico\Tipos\DateTipo.cs" />
     <Compile Include="Semantico\Tipos\EnumTipo.cs" />
     <Compile Include="Semantico\Tipos\FloatTipo.cs" />
+    <Compile Include="Semantico\Tipos\FuncionTipo.cs" />
     <Compile Include="Semantico\Tipos\StructTipo.cs" />
     <Compile Include="Semantico\Tipos\BooleanTipo.cs" />
     <Compile Include="Semantico\Tipos\CharTipo.cs" />

@@ -11,7 +11,7 @@ namespace Compiladores.Arbol.Sentencia
         public string direccion;
         public override void ValidSemantic()
         {
-            throw new NotImplementedException();
+               
         }
     }
 }

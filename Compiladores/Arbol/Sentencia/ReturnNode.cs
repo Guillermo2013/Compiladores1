@@ -9,9 +9,10 @@ namespace Compiladores.Arbol.Sentencia
     public class ReturnNode:StatementNode
     {
         public ExpressionNode returnExpression;
-        public override void ValidSemantic()
-        {
-            throw new NotImplementedException();
-        }
+        public override void ValidSemantic(){
+      
+            var expresion = returnExpression.ValidateSemantic(); 
+            
+            }
     }
 }

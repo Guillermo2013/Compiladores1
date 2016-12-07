@@ -16,9 +16,10 @@ namespace Compiladores.Arbol.BinaryOperador
             if (OperadorIzquierdo == null)
                 return expresion2;
             var expresion1 = OperadorIzquierdo.ValidateSemantic();
-            if (expresion1 == expresion2)
+            if (expresion1.GetType() == expresion2.GetType())
                 return expresion2;
-            return null;
+
+            throw new SemanticoException("no se puede asignar"+expresion1+" con "+ expresion2);
         }
     }
 }

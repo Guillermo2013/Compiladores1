@@ -10,7 +10,7 @@ namespace Compiladores.Arbol.TiposDeDatos
 {
     public class LiteralBooleanaNode:ExpressionNode
     {
-        public bool valor { get; set; }
+        public bool valor;
         public override TiposBases ValidateSemantic()
         {
             return new BooleanTipo();

@@ -21,6 +21,7 @@ namespace Compiladores.Arbol.BinaryOperador
             if (expresion1 is StringTipo || expresion2 is StringTipo)
                if(!(expresion2 is EnumTipo) && !(expresion1 is EnumTipo))
                    if (!(expresion2 is DateTipo) && !(expresion1 is DateTipo))
+                       if (!(expresion2 is VoidTipo) && !(expresion1 is VoidTipo))
                 return new StringTipo();
 
             if (expresion1 is CharTipo && expresion2 is CharTipo)

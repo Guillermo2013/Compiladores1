@@ -24,6 +24,7 @@ namespace Compiladores.Arbol.Sentencia
             {
                 ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
                 foreach (var bloqueTrue in BloqueCondicionalTrue)
+                  if(bloqueTrue !=null)
                     bloqueTrue.ValidSemantic();
                 ContenidoStack.InstanceStack.Stack.Pop();
             }
@@ -31,6 +32,7 @@ namespace Compiladores.Arbol.Sentencia
             {
                 ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
                 foreach (var bloqueFalse in BloqueCondicionalFalse)
+                    if (bloqueFalse != null)
                     bloqueFalse.ValidSemantic();
                 ContenidoStack.InstanceStack.Stack.Pop();
             }

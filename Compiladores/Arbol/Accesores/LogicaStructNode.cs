@@ -9,10 +9,10 @@ namespace Compiladores.Arbol.Accesores
 {
     public class LogicaStructNode : AccesoresNode
     {
-        public IdentificadorNode identificador { get; set; }
+        public IdentificadorNode identificador;
         public override void ValidSemantic()
         {
-            identificador.ValidateSemantic();
+            
         }
     }
 }

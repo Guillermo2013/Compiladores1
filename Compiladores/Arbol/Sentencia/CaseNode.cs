@@ -13,7 +13,7 @@ namespace Compiladores.Arbol.Sentencia
         public ExpressionNode condicional;
         public List<StatementNode> BloqueCondicionalCase;
         public BreakNode breakNode;
-        public override void ValidSemantic()
+        public  TiposBases ValidSemanticReturn()
         {
             var condicionalTipo = condicional.ValidateSemantic();
             if (condicionalTipo is IntTipo || condicionalTipo is StringTipo || condicionalTipo is FloatTipo
@@ -22,9 +22,14 @@ namespace Compiladores.Arbol.Sentencia
                 foreach (StatementNode sentenciaAevaluar in BloqueCondicionalCase){
                     sentenciaAevaluar.ValidSemantic();
                 }
-
+                return condicionalTipo;
             }
             throw new SemanticoException("la expresion debe ser booleana");
         }
+        public override void ValidSemantic()
+        {
+
+        }
+       
     }
 }

@@ -28,14 +28,17 @@ namespace Compiladores.Arbol.BinaryOperador
             {
                 if (expresion is AutoOperacionSumaNode)
                  validarAutoOperacionSuma(Tipo, expresionValidado);
-                if(expresion is AutoOperacionRestaNode)
+                else if(expresion is AutoOperacionRestaNode)
                     validarAutoOperacionResta(Tipo, expresionValidado);
-                if (expresion is AutoOperacionDivisionNode)
+                else if (expresion is AutoOperacionDivisionNode)
                     validarAutoOperacionDivision(Tipo, expresionValidado);
-                if(expresion is AutoOperacionMultiplicacionNode)
+                else if(expresion is AutoOperacionMultiplicacionNode)
                     validarAutoOperacionMultiplicacion(Tipo, expresionValidado);
-                if (expresion is OperacionDivisionResiduoNode)
+                else if (expresion is OperacionDivisionResiduoNode)
                     validarOperacionDivisionResiduoNode(Tipo, expresionValidado);
+                else
+                    throw new SemanticoException("no se puede asignar" + Tipo + " con " + expresionValidado );
+                
             }
             
         }

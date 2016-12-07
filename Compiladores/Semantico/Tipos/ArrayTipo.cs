@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Compiladores.Semantico.Tipos
 {
-    public class ConstTipo:TiposBases
+    public class ArrayTipo:TiposBases
     {
-        public TiposBases tipo=null;
+        public TiposBases tipo = null;
+        public bool unidimensional = false;
+        public bool bidimensional = false ;
+
         public override string ToString()
         {
-            return "Const";
+            return "Array";
         }
     }
 }

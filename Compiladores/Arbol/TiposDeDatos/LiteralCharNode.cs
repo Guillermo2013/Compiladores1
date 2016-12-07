@@ -10,7 +10,7 @@ namespace Compiladores.Arbol.TiposDeDatos
 {
    public  class LiteralCharNode: ExpressionNode
     {
-       public char valor { get; set; }
+       public char valor;
        public override TiposBases ValidateSemantic()
        {
            return new CharTipo();

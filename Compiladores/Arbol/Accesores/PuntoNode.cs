@@ -9,10 +9,10 @@ namespace Compiladores.Arbol.Accesores
 {
     public class PuntoNode : AccesoresNode
     {
-        public IdentificadorNode identificador { get; set; }
+        public IdentificadorNode identificador;
         public override void ValidSemantic()
         {
-            identificador.ValidateSemantic();
+          
         }
     }
 }

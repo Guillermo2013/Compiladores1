@@ -10,7 +10,7 @@ namespace Compiladores.Arbol.TiposDeDatos
 {
     public class LiteralIntNode:ExpressionNode
     {
-        public int valor { get; set; }
+        public int valor;
         public override TiposBases ValidateSemantic()
         {
             return new IntTipo();

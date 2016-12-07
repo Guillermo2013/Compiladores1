@@ -22,6 +22,7 @@ namespace Compiladores.Arbol.Sentencia
                     sentencias.ValidSemantic();
                 ContenidoStack.InstanceStack.Stack.Pop();
             }
+            else
             throw new SemanticoException("la condiciona debe de ser tipo booleano");
         }
     }

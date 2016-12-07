@@ -8,6 +8,7 @@ namespace Compiladores.Semantico.Tipos
 {
     public class VoidTipo:TiposBases
     {
+        public List<TiposBases> listaParametros = new List<TiposBases>();
         public override string ToString()
         {
             return "Void";

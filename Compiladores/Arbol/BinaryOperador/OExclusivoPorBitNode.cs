@@ -1,4 +1,5 @@
 ﻿using Compiladores.Semantico;
+using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

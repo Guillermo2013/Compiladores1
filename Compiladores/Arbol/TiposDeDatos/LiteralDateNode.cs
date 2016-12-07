@@ -10,7 +10,7 @@ namespace Compiladores.Arbol.TiposDeDatos
 {
     public class LiteralDateNode:ExpressionNode
     {
-        public DateTime valor { get; set; }
+        public DateTime valor;
         public override TiposBases ValidateSemantic()
         {
             return new DateTipo();

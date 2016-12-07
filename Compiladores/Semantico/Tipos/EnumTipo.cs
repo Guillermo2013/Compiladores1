@@ -9,10 +9,12 @@ namespace Compiladores.Semantico.Tipos
     
         public class EnumTipo : TiposBases
         {
+            public Dictionary<string, int> elementos = new Dictionary<string, int>();
             public override string ToString()
             {
                 return "Enum";
             }
+           
         
     }
 }
