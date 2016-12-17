@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,22 @@ namespace Compiladores.Arbol.Sentencia
                 ContenidoStack.InstanceStack.Stack.Pop();
             }
             else
-            throw new SemanticoException("la condiciona debe de ser tipo booleano");
+                throw new SemanticoException("la condiciona debe de ser tipo booleano fila " +condicional._TOKEN.Fila + " columna " +condicional._TOKEN.Columna);
+        }
+        public override void Interpret()
+        {
+            var condition = condicional.Interpret();
+            while (((BoolValue)condition).Value)
+            {
+                foreach (var statementNode in BloqueCondicionalWhile)
+                {
+                    statementNode.Interpret();
+                    if (statementNode is BreakNode)
+                        break;
+                    if (statementNode is ReturnNode)
+                        return;
+                }
+            }
         }
     }
 }

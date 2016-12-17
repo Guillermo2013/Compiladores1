@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,14 @@ namespace Compiladores.Arbol.BinaryOperador
             var expresion2 = OperadorIzquierdo.ValidateSemantic();
             if (expresion1 is BooleanTipo && expresion2 is BooleanTipo)
                 return new BooleanTipo();
-            throw new Sintactico.SintanticoException(" las expresiones tiene que ser booleanas ");
+            throw new Sintactico.SintanticoException(" las expresiones tiene que ser booleanas " + "fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+        }
+        public override Implementacion.Value Interpret()
+        {
+            dynamic left = OperadorIzquierdo.Interpret();
+            dynamic right = OperadorDerecho.Interpret();
+            return new BoolValue { Value = (left.Value || right.Value) };
+            
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Compiladores.Implementacion;
 
 namespace Compiladores.Arbol.Sentencia
 {
@@ -20,7 +21,15 @@ namespace Compiladores.Arbol.Sentencia
             ContenidoStack.InstanceStack.Stack.Pop();
             var condicionalEvaluar = condicional.ValidateSemantic();
             if (!(condicionalEvaluar is BooleanTipo))
-                throw new SemanticoException("la condiciona debe de ser tipo booleano ");
+                throw new SemanticoException("la condiciona debe de ser tipo booleano fila "+ condicional._TOKEN.Fila +" columna "+condicional._TOKEN.Columna );
+        }
+        public override void Interpret()
+        {
+            do{
+                foreach(var sentencia in BloqueCondicionalDoWhile)
+                   sentencia.Interpret(); 
+            }while((condicional.Interpret() as BoolValue).Value);
+
         }
     }
 }

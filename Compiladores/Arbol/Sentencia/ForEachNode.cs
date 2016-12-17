@@ -17,5 +17,9 @@ namespace Compiladores.Arbol.Sentencia
                 sentencia.ValidSemantic();
             }
         }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

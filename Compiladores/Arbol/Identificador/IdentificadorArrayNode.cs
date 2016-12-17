@@ -80,6 +80,9 @@ namespace Compiladores.Arbol.Identificador
             return null;
 
         }
-
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

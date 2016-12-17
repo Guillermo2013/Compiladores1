@@ -17,7 +17,14 @@ namespace Compiladores.Arbol.Sentencia
         public override void ValidSemantic()
         {
             if (ContenidoStack.InstanceStack.Stack == null)
-                ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, obtenerTipo(tipo));
+                if (pointer != null)
+                {
+                    var apuntador = new MulpilicadorOperdadorReferenciaTipo();
+                    apuntador.tipoReferencia = obtenerTipo(tipo);
+                    ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador,apuntador );
+                }
+                else
+                    ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, obtenerTipo(tipo));
 
             else
             {
@@ -28,9 +35,16 @@ namespace Compiladores.Arbol.Sentencia
                         existe = true;
                 };
                 if (existe == true)
-                    throw new SintanticoException("variable " + identificador + " ya existe");
+                    throw new SintanticoException("variable " + identificador + " ya existe fila:"+ _TOKEN.Fila+" columna "+_TOKEN.Columna);
                 if (existe == false)
-                    ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, obtenerTipo(tipo));
+                    if (pointer != null && pointer.Count>0)
+                    {
+                        var apuntador = new MulpilicadorOperdadorReferenciaTipo();
+                        apuntador.tipoReferencia = obtenerTipo(tipo);
+                        ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, apuntador);
+                    }
+                    else
+                        ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, obtenerTipo(tipo));
             }
         }
         private TiposBases obtenerTipo(String tipo)
@@ -57,6 +71,10 @@ namespace Compiladores.Arbol.Sentencia
                 return new VoidTipo();
             return null;
 
+        }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
         }
 
     }

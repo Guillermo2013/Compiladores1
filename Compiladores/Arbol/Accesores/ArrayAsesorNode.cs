@@ -14,7 +14,7 @@ namespace Compiladores.Arbol.Accesores
         {
             var expresionTamaño = tamaño.ValidateSemantic();
             if (!(expresionTamaño is IntTipo))
-                throw new Sintactico.SintanticoException("debe ser una expresion numerica entera ");
+                throw new Sintactico.SintanticoException("debe ser una expresion numerica entera fila "+ tamaño._TOKEN.Fila +" columna "+tamaño._TOKEN.Columna );
         }   
     }
 }

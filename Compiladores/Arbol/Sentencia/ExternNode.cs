@@ -16,5 +16,10 @@ namespace Compiladores.Arbol.Sentencia
         {
             throw new NotImplementedException();
         }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
+    
 }

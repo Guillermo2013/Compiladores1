@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Implementacion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,10 @@ namespace Compiladores.Semantico.Tipos
         {
             return "Void";
         }
+        public override Value GetDefaultValue()
+        {
+            return new IntValue();
+        }
+
     }
 }

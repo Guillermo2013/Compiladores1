@@ -22,7 +22,7 @@ namespace Compiladores.Arbol.Sentencia
             foreach (var stack in ContenidoStack.InstanceStack.Stack)
             {
                 if (stack.VariableExist(identificador))
-                    throw new SintanticoException("variable " + identificador + " existe");
+                    throw new SintanticoException("variable " + identificador + " existe fila "+ _TOKEN.Fila +" columna "+ _TOKEN.Columna);
             };
             Dictionary<string, int> elementos = new Dictionary<string, int>();
             foreach (var lista in ListaEnum)
@@ -51,6 +51,10 @@ namespace Compiladores.Arbol.Sentencia
             enumInstance.elementos = elementos;
             ContenidoStack.InstanceStack.Stack.Peek()._variables.Add(identificador, enumInstance);
            
+        }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

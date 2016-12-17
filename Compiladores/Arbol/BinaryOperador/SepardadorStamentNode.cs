@@ -16,5 +16,11 @@ namespace Compiladores.Arbol.BinaryOperador
             OperadorDerecho.ValidSemantic();
             OperadorIzquierdo.ValidSemantic();
         }
+        public override void Interpret()
+
+        {
+            OperadorDerecho.Interpret();
+            OperadorIzquierdo.Interpret();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace Compiladores.Arbol
     public abstract class ExpressionNode
     {
         public abstract TiposBases ValidateSemantic();
+        public Token _TOKEN;
+        public abstract Value Interpret();
     }
 }

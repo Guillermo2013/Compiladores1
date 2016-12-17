@@ -15,5 +15,9 @@ namespace Compiladores.Arbol
         {
             throw new NotImplementedException();
         }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

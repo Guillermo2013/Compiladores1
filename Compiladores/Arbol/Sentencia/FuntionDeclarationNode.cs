@@ -15,13 +15,13 @@ namespace Compiladores.Arbol.Sentencia
     {
         public GeneralDeclarationNode identificador;
         public List<StatementNode> paramentros;
-        public List<StatementNode> declaracionDeFuncion;
+        public List<StatementNode> declaracionDeFuncion =null;
         public override void ValidSemantic()
         {
             foreach (var stack in ContenidoStack.InstanceStack.Stack)
             {
                 if (stack.VariableExist(identificador.identificador))
-                    throw new SintanticoException("variable " + identificador + " existe");
+                    throw new SintanticoException("variable " + identificador.identificador + " existe fila "+identificador._TOKEN.Fila+" colunma" +identificador._TOKEN.Columna);
             }
              List<TiposBases> listaParametros = new List<TiposBases>();
            if(paramentros != null)
@@ -34,15 +34,54 @@ namespace Compiladores.Arbol.Sentencia
                     var identificadorNode = fields[1].GetValue(lista);
                     var identificadorOperando = identificadorNode.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
                     var tipo = identificadorOperando[3].GetValue(identificadorNode);
-                    listaParametros.Add(obtenerTipo((string)tipo));
+                    var referencia = new YreferenciaTipo();
+                    referencia.tipoReferencia = obtenerTipo((string)tipo);
+                    listaParametros.Add(referencia);
                 }
                 if (lista is Identificador.IdentificadorStamNode)
                 {
                     Type fieldsType = typeof(Identificador.IdentificadorStamNode);
                     FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
                     var tipo = fields[3].GetValue(lista);
-                    listaParametros.Add(obtenerTipo((string)tipo));
+                    var referenciaApuntador = fields[1].GetValue(lista);
+                    if(referenciaApuntador != null){
+                       var apuntador = new MulpilicadorOperdadorReferenciaTipo();
+                        apuntador.tipoReferencia = obtenerTipo((string)tipo);
+                         listaParametros.Add(apuntador);
+                    }
+                    else{
+                        listaParametros.Add(obtenerTipo((string)tipo));
+                        
+                    }
                 }
+                if (lista is Identificador.IdentificadorArrayNode)
+                {
+                    Type fieldsType = typeof(Identificador.IdentificadorArrayNode);
+                    FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    var declaracion = fields[0].GetValue(lista);
+                   
+                    var tipo = declaracion.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    var puntero = tipo[1].GetValue(declaracion);
+                    var unidimesional = fields[1].GetValue(lista);
+                    var bidimesional = fields[2].GetValue(lista);
+                    var array = new ArrayTipo();
+                    array.tipo = obtenerTipo( (string)tipo[0].GetValue(declaracion));
+                    array.unidimensional = (unidimesional != null)?true:false;
+                    array.bidimensional = (bidimesional != null) ? true : false;
+               
+                    if (puntero != null)
+                    {
+                        var apuntador = new MulpilicadorOperdadorReferenciaTipo();
+                        apuntador.tipoReferencia = array;
+                        listaParametros.Add(apuntador);
+                    }
+                    else
+                    {
+                        listaParametros.Add(array);
+
+                    }
+                }
+
             }
             
             if (identificador.tipo == "void")
@@ -50,6 +89,7 @@ namespace Compiladores.Arbol.Sentencia
                 var funcion = new VoidTipo();
                 if (paramentros != null)
                     funcion.listaParametros = listaParametros;
+                
                 ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador.identificador, funcion);
             }
             else
@@ -64,9 +104,23 @@ namespace Compiladores.Arbol.Sentencia
              if (paramentros != null)
                  foreach (var lista in paramentros)
                      lista.ValidSemantic();
-             if (declaracionDeFuncion != null)
+             if (declaracionDeFuncion.Count != 0)
+             {
                  foreach (var lista in declaracionDeFuncion)
+                 {
+                     if (identificador.tipo == "void")
+                     {
+                         if (lista is ReturnNode)
+                             throw new SemanticoException("la funcion " + identificador.identificador + " es una funcion void y no es de retorno");
+                     }
+
                      lista.ValidSemantic();
+                 }
+                 if (!(declaracionDeFuncion.Last() is ReturnNode))
+                 {
+                     throw new SemanticoException("la funcion " + identificador.identificador + " debe tener una funcion de retorno ");
+                 }
+             }
              ContenidoStack.InstanceStack.Stack.Pop();
         }
         private TiposBases obtenerTipo(String tipo)
@@ -91,9 +145,17 @@ namespace Compiladores.Arbol.Sentencia
                 return new VoidTipo();
             else if (tipo == "const")
                 return new VoidTipo();
+            else if (tipo == "Array")
+                return new ArrayTipo();
             return null;
 
         }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
+    
 }
+
     

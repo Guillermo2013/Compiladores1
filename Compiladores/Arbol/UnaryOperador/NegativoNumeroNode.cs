@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,16 @@ namespace Compiladores.Arbol.UnaryOperador
             var expresion = Operando.ValidateSemantic();
             if (expresion is IntTipo || expresion is FloatTipo)
                 return expresion;
-            throw new SemanticoException("se esperaba un literal numerica ");
+            throw new SemanticoException("se esperaba un literal numerica " + Operando._TOKEN.Fila + " columna " + Operando._TOKEN.Columna);
+        }
+        public override Implementacion.Value Interpret()
+        {
+            var expresion = Operando.Interpret();
+            if (expresion is IntValue)
+                return new IntValue { Value = -(expresion as IntValue).Value };
+            if (expresion is FloatValue)
+                return new FloatValue { Value = -(expresion as FloatValue).Value };
+            return null;
         }
     }
 }

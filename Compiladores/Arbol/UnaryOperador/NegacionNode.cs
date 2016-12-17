@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,15 @@ namespace Compiladores.Arbol.UnaryOperador
             var expresion = Operando.ValidateSemantic();
             if(expresion is BooleanTipo)
                 return new BooleanTipo();
-            throw new SemanticoException("La expresion debe ser booleana");
+            
+            throw new SemanticoException("La expresion debe ser booleana" + Operando._TOKEN.Fila + " columna " + Operando._TOKEN.Columna);
+        }
+        public override Implementacion.Value Interpret()
+        {
+            var valor = Operando.Interpret();
+            if (valor is BoolValue)
+                return new BoolValue() { Value = !(valor as BoolValue).Value };
+            return null;
         }
     }
 }

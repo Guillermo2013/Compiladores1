@@ -16,5 +16,9 @@ namespace Compiladores.Arbol.UnaryOperador
             var operador = Operando.ValidateSemantic();
             return operador;
         }
+        public override Implementacion.Value Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,13 +21,42 @@ namespace Compiladores.Arbol.Sentencia
         public List<ExpressionNode> asignacion;
         public override void ValidSemantic()
         {
-
+            var existeIdentificador = false;
+            Dictionary<string, TiposBases> elementosHeredados = new Dictionary<string, TiposBases>();
             foreach (var stack in ContenidoStack.InstanceStack.Stack)
             {
-                if (stack.VariableExist(identificador))
-                    throw new SintanticoException("variable " + identificador + " existe");
+                if (stack.VariableExist(variableNombre))
+                    throw new SintanticoException("variable " + variableNombre + " existe " + _TOKEN.Fila + " columnas " + _TOKEN.Columna);
             };
+            foreach (var stack in ContenidoStack.InstanceStack.Stack)
+            {
+                foreach (var tipo in stack._variables.ToList())
+                {
+                    if (tipo.Value is StructTipo)
+                    {
+                      Type fieldsType = typeof(StructTipo);
+                    FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public  | BindingFlags.Instance);
+                    var identificadorNode = fields[0].GetValue(tipo.Value);
+                       if((string)identificadorNode == identificador){
+
+                        if (bloqueStruct != null)
+                            throw new SintanticoException("variable " + identificador + " existe no se puede definir el struct " + _TOKEN.Fila + " columnas " + _TOKEN.Columna);
+                       
+                            elementosHeredados = (Dictionary<string, TiposBases>)fields[1].GetValue(tipo.Value);
+                            existeIdentificador = true;
+                       }
+                    }
+                }
+             };
+
+            if (bloqueStruct == null)
+            if (ContenidoStack.InstanceStack.Stack.ToList()[0]._variables.Count != 0)
+                if (existeIdentificador == false)
+                    throw new SintanticoException("variable " + this.identificador + " no existe el struct " + _TOKEN.Fila + " columnas " + _TOKEN.Columna);
+                       
+
             Dictionary<string, TiposBases> elementos = new Dictionary<string, TiposBases>();
+            if (bloqueStruct != null)
             foreach (var lista in bloqueStruct) {
                 if (lista is IdentificadorArrayNode)
                 {
@@ -55,8 +84,13 @@ namespace Compiladores.Arbol.Sentencia
                     elementos.Add((string)identificador, obtenerTipo((string)Tipo));
                 }
              }
+
             var structTipo = new StructTipo();
-            structTipo.elementos = elementos;
+            if (elementosHeredados.Count == 0)
+                structTipo.elementos = elementos;
+            else
+                structTipo.elementos = elementosHeredados;
+            structTipo.identificadorStruct = this.identificador;
             ContenidoStack.InstanceStack.Stack.Peek()._variables.Add(variableNombre, structTipo);
         }
         private TiposBases obtenerTipo(String tipo)
@@ -84,7 +118,10 @@ namespace Compiladores.Arbol.Sentencia
             return null;
 
         }
-
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
         

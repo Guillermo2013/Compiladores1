@@ -12,8 +12,14 @@ namespace Compiladores.Arbol.UnaryOperador
     {
         public override TiposBases ValidateSemantic()
         {
-             Operando.ValidateSemantic();
-             return new IntTipo();
+            var identificador = Operando.ValidateSemantic();
+            var tipo = new YreferenciaTipo();
+            tipo.tipoReferencia = identificador;
+            return tipo;
+        }
+        public override Implementacion.Value Interpret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

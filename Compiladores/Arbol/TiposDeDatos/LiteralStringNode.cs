@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Semantico;
+using Compiladores.Implementacion;
 
 namespace Compiladores.Arbol.TiposDeDatos
 {
@@ -14,6 +15,10 @@ namespace Compiladores.Arbol.TiposDeDatos
         public override TiposBases ValidateSemantic()
         {
             return new StringTipo();
+        }
+        public override Implementacion.Value Interpret()
+        {
+            return new StringValue { Value = valor };
         }
     }
 }

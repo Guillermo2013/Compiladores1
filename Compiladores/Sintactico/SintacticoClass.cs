@@ -153,7 +153,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaReturn)
             {
-
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var expression = EXPRESSION();
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
@@ -162,7 +162,7 @@ namespace Compiladores.Sintactico
 
                 }
                 ObtenerSiguienteTokenC();
-                return new ReturnNode { returnExpression = expression };
+                return new ReturnNode { returnExpression = expression , _TOKEN = token};
             }
             return null;
 
@@ -198,7 +198,8 @@ namespace Compiladores.Sintactico
             }
             else
             {
-                var identificador = new IdentificadorStamNode { inicializacion = ValueForId()[0], pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador };
+                var token = _TokenActual;
+                var identificador = new IdentificadorStamNode { inicializacion = ValueForId()[0], pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador , _TOKEN = token};
                 var declaracionTotal = MultiDeclaration(declaracion.tipo, identificador);
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -312,13 +313,14 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("se esperaba un identificador");
                 }
                 var identificador = _TokenActual;
-                var generalDeclaracion = new GeneralDeclarationNode{ tipo = tipo.Lexema, identificador = identificador.Lexema };
+                var generalDeclaracion = new GeneralDeclarationNode{ tipo = tipo.Lexema, identificador = identificador.Lexema , _TOKEN = tipo};
                 ObtenerSiguienteTokenC();
              return IsFunctionDeclaration(generalDeclaracion); 
             }
             else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaExtern)
             {
-                
+
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var literalString = _TokenActual;
                 if (_TokenActual.Tipo == TokenTipos.LiteralString)
@@ -335,13 +337,13 @@ namespace Compiladores.Sintactico
                         throw new SintanticoException("se esperaba un } ");
                     }
                     ObtenerSiguienteTokenC();
-                    return new ExternNode { literalString = literalString.Lexema, listadesentencias = lista };
+                    return new ExternNode { literalString = literalString.Lexema, listadesentencias = lista , _TOKEN = token};
                 }
 
                 else
                 {
                     var declaracion =  DECLARATION();
-                    return new ExternNode { literalString = literalString.Lexema, declaracion = declaracion };
+                    return new ExternNode { literalString = literalString.Lexema, declaracion = declaracion , _TOKEN = token};
                 }
 
             }
@@ -352,6 +354,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaContinue)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -359,7 +362,7 @@ namespace Compiladores.Sintactico
 
                 }
                 ObtenerSiguienteTokenC();
-                return new ContinueNode();
+                return new ContinueNode() {  _TOKEN = token};
             }
             return null;
 
@@ -392,7 +395,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("se esperaba un ;");
                 }
                 ObtenerSiguienteTokenC();
-                return new EnumNode { identificador = identificador.Lexema, ListaEnum = declaracion };
+                return new EnumNode { identificador = identificador.Lexema, ListaEnum = declaracion, _TOKEN = identificador };
             }
             return null;
         }
@@ -442,6 +445,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.Asignacion)
             {
+                var tokenAsig = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var index = _TokenActual;
                 if (_TokenActual.Tipo != TokenTipos.Numero && _TokenActual.Tipo != TokenTipos.NumeroHexagecimal && _TokenActual.Tipo != TokenTipos.NumeroOctal)
@@ -450,11 +454,11 @@ namespace Compiladores.Sintactico
                 }
                 ObtenerSiguienteTokenC();
                 if (index.Tipo == TokenTipos.Numero)
-                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Int32.Parse(index.Lexema) } };
+                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema, _TOKEN = TokenActual }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Int32.Parse(index.Lexema) , _TOKEN = index}, _TOKEN = tokenAsig };
                 else if (index.Tipo == TokenTipos.NumeroHexagecimal)
-                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Convert.ToInt32(index.Lexema, 16) } };
+                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema, _TOKEN = TokenActual }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Convert.ToInt32(index.Lexema, 16), _TOKEN = index },  _TOKEN = tokenAsig};
                 else
-                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Convert.ToInt32(index.Lexema, 8) } };
+                    return new AsignacionNode { OperadorIzquierdo = new IdentificadorNode { value = TokenActual.Lexema }, operador = "=", OperadorDerecho = new LiteralIntNode { valor = Convert.ToInt32(index.Lexema, 8), _TOKEN = index }, _TOKEN = tokenAsig };
             }
             else
             {
@@ -466,6 +470,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.Directiva)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.PalabraReservadaInclude)
                 {
@@ -478,7 +483,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("se esperaba un direccion");
                 }
                 ObtenerSiguienteTokenC();
-                return new IncludeNode { direccion = _TokenActual.Lexema };
+                return new IncludeNode { direccion = _TokenActual.Lexema  , _TOKEN = token};
             }
             return null;
         }
@@ -487,6 +492,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaConst)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var tipo = _TokenActual;
                 if (_TokenActual.Tipo != TokenTipos.PalabraReservadaInt && _TokenActual.Tipo != TokenTipos.PalabraReservadaFloat &&
@@ -514,7 +520,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("se esperaba un ;");
                 }
                 ObtenerSiguienteTokenC();
-                return new ConstNode { identificador = identificador.Lexema, pointer = pointe, expresion = expresion, Tipo = tipo.Lexema };
+                return new ConstNode { identificador = identificador.Lexema, pointer = pointe, expresion = expresion, Tipo = tipo.Lexema, _TOKEN = token};
             }
             return null;
         }
@@ -555,7 +561,7 @@ namespace Compiladores.Sintactico
                   var pointer = IsPointer();
                     if (_TokenActual.Tipo == TokenTipos.Identificador)
                     {
-                        var structadefinicion = new StructNode { identificador = identificador.Lexema, bloqueStruct = bloqueStruct, variableNombre = _TokenActual.Lexema, pointer= pointer };
+                        var structadefinicion = new StructNode { identificador = identificador.Lexema, bloqueStruct = bloqueStruct, variableNombre = _TokenActual.Lexema, pointer= pointer, _TOKEN = identificador };
                         ObtenerSiguienteTokenC();
                         var expresion = OptionalInitOfStruct();
                         if (expresion != null)
@@ -563,7 +569,7 @@ namespace Compiladores.Sintactico
                         return MultiDeclarationStructs(structadefinicion);
                     }
                 
-                return new StructNode { identificador = identificador.Lexema, bloqueStruct = bloqueStruct };
+                return new StructNode { identificador = identificador.Lexema, bloqueStruct = bloqueStruct , _TOKEN = identificador};
             }
             else if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion || _TokenActual.Tipo == TokenTipos.Identificador)
             {
@@ -572,7 +578,7 @@ namespace Compiladores.Sintactico
                 {
                     throw new SintanticoException("se esperaba un identificador ");
                 }
-                var structadefinicion = new StructNode { identificador = identificador.Lexema, variableNombre = _TokenActual.Lexema, pointer = pointer };
+                var structadefinicion = new StructNode { identificador = identificador.Lexema, variableNombre = _TokenActual.Lexema, pointer = pointer, _TOKEN = identificador };
                 ObtenerSiguienteTokenC();
                 structadefinicion.asignacion = OptionalInitOfStruct();
                 return MultiDeclarationStructs(structadefinicion);
@@ -586,15 +592,16 @@ namespace Compiladores.Sintactico
             {
                 var separador = _TokenActual;
                 ObtenerSiguienteTokenC();
+                var identificacion = _TokenActual;
                 var pointer = IsPointer();
                 if (_TokenActual.Tipo != TokenTipos.Identificador)
                 {
                     throw new SintanticoException("se esperaba un identificador ");
                 }
-                var identificador = new StructNode { pointer = pointer, identificador = _TokenActual.Lexema, bloqueStruct = structVariable.bloqueStruct, variableNombre = structVariable.variableNombre };
+                var identificador = new StructNode { pointer = pointer, identificador = _TokenActual.Lexema, bloqueStruct = structVariable.bloqueStruct, variableNombre = structVariable.variableNombre, _TOKEN = identificacion };
 
                 ObtenerSiguienteTokenC();
-                var separadorStament = new SepardadorStamentNode { valor = separador.Lexema, OperadorIzquierdo = structVariable, OperadorDerecho = identificador };
+                var separadorStament = new SepardadorStamentNode { valor = separador.Lexema, OperadorIzquierdo = structVariable, OperadorDerecho = identificador, _TOKEN = separador};
                 identificador.asignacion = OptionalInitOfStruct();
      
                 return separadorStament;
@@ -631,6 +638,7 @@ namespace Compiladores.Sintactico
 
         private List<StatementNode> DeclarationOfStruct()
         {
+            var token = _TokenActual;
             var general = GeneralDeclaration();
             var IsArray = ArrayIdentifier();
             var arrayBi = BidArray();
@@ -649,7 +657,7 @@ namespace Compiladores.Sintactico
             }
             else
             {
-                var declarcion = new IdentificadorArrayNode { identificador = general, unidimesionarioArray = IsArray, BidimesionarioArray = arrayBi };
+                var declarcion = new IdentificadorArrayNode { identificador = general, unidimesionarioArray = IsArray, BidimesionarioArray = arrayBi , _TOKEN = token};
                 var declaracion2 = MultiDeclaration(general.tipo, declarcion);
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -689,7 +697,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("se espera ]");
                 }
                 ObtenerSiguienteTokenC();
-                return new ArrayAsesorNode { tamaño = tamaño };
+                return new ArrayAsesorNode { tamaño = tamaño , _TOKEN = tamaño._TOKEN};
             }
             else
             {
@@ -707,14 +715,28 @@ namespace Compiladores.Sintactico
                     return CallFunctionStament(identificador);
 
                 var lista = new List<AccesoresNode>();
-                var identificadorConAsesor = IndexOrArrowAccessStament(identificador.Lexema, lista);
+                var identificadorConAsesor = IndexOrArrowAccess(identificador.Lexema, lista, null);
+                var Token  = _TokenActual;
+                if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
+                {
+                    var tipo = _TokenActual;
+                    ObtenerSiguienteTokenC();
+                    if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    {
+                        throw new SintanticoException("se espera ;");
+                    }
+                    ObtenerSiguienteTokenC();
+                    if (tipo.Tipo == TokenTipos.AutoOperacionDecremento)
+                        return new AutoDecrementoPosNode { operadador = identificadorConAsesor, _TOKEN = tipo };
+                    return new AutoIncrementoPosNode { operadador = identificadorConAsesor, _TOKEN = tipo };
+                }
                 var expresion = ValueForPreId();
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
                       throw new SintanticoException("se espera ;");
                 }
                 ObtenerSiguienteTokenC();
-                return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = expresion };
+                return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = expresion, _TOKEN = Token };
             }
             else if (_TokenActual.Tipo == TokenTipos.OperacionMultiplicacion)
             {
@@ -722,14 +744,17 @@ namespace Compiladores.Sintactico
                 var identificador = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var lista = new List<AccesoresNode>();
-                var identificadorConAsesor = IndexOrArrowAccessStament(identificador.Lexema, lista);
+                var identificadorConAsesor = IndexOrArrowAccess(identificador.Lexema, lista ,pointer);
+              
+                var token = _TokenActual;
                 var expresion = ValueForPointerId();
+                
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
                     throw new SintanticoException("se espera ;");
                 }
                 ObtenerSiguienteTokenC();
-                return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = expresion };
+                return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = expresion,_TOKEN = token};
             }
             else if (_TokenActual.Tipo == TokenTipos.AutoOperacionDecremento || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento)
             {
@@ -739,15 +764,15 @@ namespace Compiladores.Sintactico
                 var identificador = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var lista = new List<AccesoresNode>();
-                var identificadorConAsesor = IndexOrArrowAccessStament(identificador.Lexema, lista);
+                var identificadorConAsesor = IndexOrArrowAccess(identificador.Lexema, lista, pointer);
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
                     throw new SintanticoException("se espera ;");
                 }
                 ObtenerSiguienteTokenC();
                 if (token.Tipo == TokenTipos.AutoOperacionDecremento)
-                    return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = new AutoOperacionDecrementoPre {  Value = token.Lexema} };
-                return new AssignStamentExpresionNode { OperadorIzquierdo = identificadorConAsesor, expresion = new AutoOperacionIncrementoPre { Value = token.Lexema } };
+                    return new AutoDecrementoPreNode { operadador = identificadorConAsesor, _TOKEN = token };
+                return new AutoIncrementoPreNode { operadador = identificadorConAsesor, _TOKEN = token };
             }
             return null;
         }
@@ -760,8 +785,8 @@ namespace Compiladores.Sintactico
             {
                 var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
-                if (tipo.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPos { Value = tipo.Lexema };
-                else return new AutoOperacionDecrementoPos { Value = tipo.Lexema };
+                if (tipo.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPos { Value = tipo.Lexema, _TOKEN = tipo };
+                else return new AutoOperacionDecrementoPos { Value = tipo.Lexema, _TOKEN = tipo };
             }
             else if (_TokenActual.Tipo == TokenTipos.Asignacion
                 || _TokenActual.Tipo == TokenTipos.AutoOperacionSuma
@@ -780,17 +805,17 @@ namespace Compiladores.Sintactico
                 var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var expression = EXPRESSION();
-                if (_TokenActual.Tipo == TokenTipos.Asignacion) return new AsignacionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionSuma) return new AutoOperacionSumaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionResta) return new AutoOperacionRestaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionMultiplicacion) return new AutoOperacionMultiplicacionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionDivision) return new AutoOperacionDivisionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionResiduo) return new AutoOperacionResiduoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionOlogico) return new AutoOperacionOlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionXor) return new AutoOperacionXorNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionYlogico) return new AutoOperacionYlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha) return new AutoOperacionCorrimientoDerechaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (_TokenActual.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda) return new AutoOperacionCorrimientoIzquierdaNode { operador = tipo.Lexema, OperadorDerecho = expression };
+                if (tipo.Tipo == TokenTipos.Asignacion) return new AsignacionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionSuma) return new AutoOperacionSumaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionResta) return new AutoOperacionRestaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionMultiplicacion) return new AutoOperacionMultiplicacionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionDivision) return new AutoOperacionDivisionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionResiduo) return new AutoOperacionResiduoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionOlogico) return new AutoOperacionOlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionXor) return new AutoOperacionXorNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionYlogico) return new AutoOperacionYlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha) return new AutoOperacionCorrimientoDerechaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda) return new AutoOperacionCorrimientoIzquierdaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
             }
             else
             {
@@ -799,13 +824,13 @@ namespace Compiladores.Sintactico
             return null;
         }
 
-        private StatementNode ArrowOrDot(StatementNode identificador)
+       /* private StatementNode ArrowOrDot(StatementNode identificador)
         {
             if (_TokenActual.Tipo == TokenTipos.Punto || _TokenActual.Tipo == TokenTipos.LogicaStruct)
             {
                 var acesor = _TokenActual;
                 var accesorPunto = new PuntoNode { valor = _TokenActual.Lexema , OperadorIzquierdo = identificador};
-                var accesorLogicaStruct = new LogicaStructNode { valor = _TokenActual.Lexema, OperadorIzquierdo = identificador };
+                var accesorLogicaStruct = new LogicaStructNode { valor = _TokenActual.Lexema, OperadorIzquierdo = identificador, _TOKEN = acesor };
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.Identificador)
                 {
@@ -831,18 +856,12 @@ namespace Compiladores.Sintactico
             {
                 return identificador;
             }
-        }
+        }*/
 
         private ExpressionNode ValueForPreId()
         {
-            if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento)
-            {
-                var tipo = _TokenActual;
-                ObtenerSiguienteTokenC();
-                if (tipo.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPos { Value = tipo.Lexema };
-                else return new AutoOperacionDecrementoPos { Value = tipo.Lexema };
-            }
-            else if (_TokenActual.Tipo == TokenTipos.Asignacion
+            
+            if (_TokenActual.Tipo == TokenTipos.Asignacion
                 || _TokenActual.Tipo == TokenTipos.AutoOperacionSuma
                 || _TokenActual.Tipo == TokenTipos.AutoOperacionResta
                 || _TokenActual.Tipo == TokenTipos.AutoOperacionMultiplicacion
@@ -859,17 +878,17 @@ namespace Compiladores.Sintactico
                 var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var expression = EXPRESSION();
-                if (tipo.Tipo == TokenTipos.Asignacion) return new AsignacionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionSuma) return new AutoOperacionSumaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionResta) return new AutoOperacionRestaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionMultiplicacion) return new AutoOperacionMultiplicacionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionDivision) return new AutoOperacionDivisionNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionResiduo) return new AutoOperacionResiduoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionOlogico) return new AutoOperacionOlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionXor) return new AutoOperacionXorNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionYlogico) return new AutoOperacionYlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha) return new AutoOperacionCorrimientoDerechaNode { operador = tipo.Lexema, OperadorDerecho = expression };
-                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda) return new AutoOperacionCorrimientoIzquierdaNode { operador = tipo.Lexema, OperadorDerecho = expression };
+                if (tipo.Tipo == TokenTipos.Asignacion) return new AsignacionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionSuma) return new AutoOperacionSumaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionResta) return new AutoOperacionRestaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionMultiplicacion) return new AutoOperacionMultiplicacionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionDivision) return new AutoOperacionDivisionNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionResiduo) return new AutoOperacionResiduoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionOlogico) return new AutoOperacionOlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionXor) return new AutoOperacionXorNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionYlogico) return new AutoOperacionYlogicoNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha) return new AutoOperacionCorrimientoDerechaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda) return new AutoOperacionCorrimientoIzquierdaNode { operador = tipo.Lexema, OperadorDerecho = expression, _TOKEN = tipo };
             }
             else if (_TokenActual.Tipo == TokenTipos.ParentesisIzquierdo)
             {
@@ -899,6 +918,7 @@ namespace Compiladores.Sintactico
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
             {
+                var token = _TokenActual;
                 var tipoDeclaracion = _TokenActual.Lexema;
                  ObtenerSiguienteTokenC();
                 var inicializacion = _TokenActual;
@@ -924,10 +944,11 @@ namespace Compiladores.Sintactico
                 }
                 ObtenerSiguienteTokenC();
                 var bloqueloop = BlOCKFORLOOP();
-                return new ForEachNode { inicializacionForEach = new GeneralDeclarationNode {  identificador = inicializacion.Lexema, tipo = tipoDeclaracion }, BloqueCondicionalForEach = bloqueloop, ListaForEach = Lista.Lexema };
+                return new ForEachNode { inicializacionForEach = new GeneralDeclarationNode {  identificador = inicializacion.Lexema, tipo = tipoDeclaracion , _TOKEN = inicializacion}, BloqueCondicionalForEach = bloqueloop, ListaForEach = Lista.Lexema , _TOKEN = token};
             }
             else
             {
+                var token = _TokenActual;
                 var expresionInicial = EXPRESSION();
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -948,7 +969,7 @@ namespace Compiladores.Sintactico
                 }
                 ObtenerSiguienteTokenC();
                 var bloqueloop = BlOCKFORLOOP();
-                return new ForNode { ExpresionDeclaracion = expresionInicial, ExpresionCondicional = expresionComparacion, ExpresionIncremento = expresionAumento, BloqueCondicionalFor = bloqueloop };
+                return new ForNode { ExpresionDeclaracion = expresionInicial, ExpresionCondicional = expresionComparacion, ExpresionIncremento = expresionAumento, BloqueCondicionalFor = bloqueloop , _TOKEN = token};
 
             }
         }
@@ -957,6 +978,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaDo)
             {
+                var tokeen = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var bloqueLoop = BlOCKFORLOOP();
                 if (_TokenActual.Tipo != TokenTipos.PalabraReservadaWhile)
@@ -980,7 +1002,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("es esperaba ; ");
                 }
                 ObtenerSiguienteTokenC();
-                return new DoWhileNode { condicional = expresion, BloqueCondicionalDoWhile = bloqueLoop };
+                return new DoWhileNode { condicional = expresion, BloqueCondicionalDoWhile = bloqueLoop , _TOKEN = tokeen};
             }
             return null;
         }
@@ -1016,6 +1038,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaSwitch)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.ParentesisIzquierdo)
                 {
@@ -1039,7 +1062,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("es esperaba } ");
                 }
                 ObtenerSiguienteTokenC();
-                return new SwitchNode { condicional = expression, BloqueCondicionalCase = listadecaso };
+                return new SwitchNode { condicional = expression, BloqueCondicionalCase = listadecaso, _TOKEN = token };
             }
             return null;
         }
@@ -1070,6 +1093,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaDefault)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.DosPuntos)
                 {
@@ -1077,7 +1101,7 @@ namespace Compiladores.Sintactico
                 }
                 ObtenerSiguienteTokenC();
                 var listaSentencia = ListOfSpecialSentences();
-                return new DefaultCaseNode { BloqueCondicionalCase = listaSentencia };
+                return new DefaultCaseNode { BloqueCondicionalCase = listaSentencia , _TOKEN = token};
 
             }
             return null;
@@ -1087,6 +1111,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaCase)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var expresion = EXPRESSION();
                 if (_TokenActual.Tipo != TokenTipos.DosPuntos)
@@ -1096,7 +1121,7 @@ namespace Compiladores.Sintactico
                 ObtenerSiguienteTokenC();
                 var listaSentencias = ListOfSpecialSentences();
                 var breakNod = BREAK();
-                return new CaseNode { condicional = expresion, BloqueCondicionalCase = listaSentencias, breakNode = breakNod };
+                return new CaseNode { condicional = expresion, BloqueCondicionalCase = listaSentencias, breakNode = breakNod, _TOKEN = token };
 
             }
             return null;
@@ -1108,13 +1133,14 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaBreak)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
                     throw new SintanticoException("es esperaba ; ");
                 }
                 ObtenerSiguienteTokenC();
-                return new BreakNode();
+                return new BreakNode() {  _TOKEN = token};
             }
             else
             {
@@ -1127,21 +1153,24 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaWhile)
             {
+                var token1 = _TokenActual;
                 ObtenerSiguienteTokenC();
 
                 if (_TokenActual.Tipo != TokenTipos.ParentesisIzquierdo)
                 {
                     throw new SintanticoException("es esperaba ( ");
                 }
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var expresion = EXPRESSION();
+                expresion._TOKEN = token;
                 if (_TokenActual.Tipo != TokenTipos.ParentesisDerecho)
                 {
                     throw new SintanticoException("es esperaba ) ");
                 }
                 ObtenerSiguienteTokenC();
                 var bloqueLoop = BlOCKFORLOOP();
-                return new WhileNode { condicional = expresion, BloqueCondicionalWhile = bloqueLoop };
+                return new WhileNode { condicional = expresion, BloqueCondicionalWhile = bloqueLoop , _TOKEN = token1 };
             }
             return null;
         }
@@ -1150,6 +1179,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaIf)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo != TokenTipos.ParentesisIzquierdo)
                 {
@@ -1164,7 +1194,7 @@ namespace Compiladores.Sintactico
                 ObtenerSiguienteTokenC();
                 var bloqueIf = BlOCKFORIF();
                 var bloqueElse = ELSE();
-                return new IfNode() { condicional = expresion, BloqueCondicionalTrue = bloqueIf, BloqueCondicionalFalse = bloqueElse };
+                return new IfNode() { condicional = expresion, BloqueCondicionalTrue = bloqueIf, BloqueCondicionalFalse = bloqueElse, _TOKEN= token };
             }
             return null;
         }
@@ -1238,7 +1268,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("Se esperaba un identificador");
                 }
                 ObtenerSiguienteTokenC();
-                return new GeneralDeclarationNode { identificador = identificador.Lexema, pointer = puntero, tipo = tipo.Lexema };
+                return new GeneralDeclarationNode { identificador = identificador.Lexema, pointer = puntero, tipo = tipo.Lexema , _TOKEN = identificador};
             }
             return null;
         }
@@ -1250,7 +1280,7 @@ namespace Compiladores.Sintactico
                 var puntero = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var listapuntero = IsPointer();
-                listapuntero.Insert(0, new OperdadorMultiplicacionUnaryNode {  value = puntero.Lexema });
+                listapuntero.Insert(0, new OperdadorMultiplicacionUnaryNode {  value = puntero.Lexema,  _TOKEN = puntero});
                 return listapuntero;
             }
             else
@@ -1278,7 +1308,7 @@ namespace Compiladores.Sintactico
             else
             {
                 var inicializacion = ValueForId();
-                var identificador = new IdentificadorStamNode { inicializacion = (inicializacion!=null)?inicializacion[0]: null , pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador };
+                var identificador = new IdentificadorStamNode { inicializacion = (inicializacion!=null)?inicializacion[0]: null , pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador,_TOKEN = declaracion._TOKEN };
                 var declaracionTotal = MultiDeclaration(declaracion.tipo, identificador);
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -1293,6 +1323,7 @@ namespace Compiladores.Sintactico
             //ValueForId-> = EXPRESSION
             if (_TokenActual.Tipo == TokenTipos.Asignacion)
             {
+
                 ObtenerSiguienteTokenC();
                 if (_TokenActual.Tipo == TokenTipos.CorcheteIzquierdo)
                 {
@@ -1613,9 +1644,9 @@ namespace Compiladores.Sintactico
 
                 }
                 var biarray = BidArray();
-                return new IdentificadorArrayNode { identificador = new GeneralDeclarationNode { identificador = identifiador.Lexema, pointer = pointer , tipo = tipo }, unidimesionarioArray = new ArrayAsesorNode { tamaño = tamaños }, BidimesionarioArray = biarray };
+                return new IdentificadorArrayNode { identificador = new GeneralDeclarationNode { identificador = identifiador.Lexema, pointer = pointer , tipo = tipo }, unidimesionarioArray = new ArrayAsesorNode { tamaño = tamaños }, BidimesionarioArray = biarray ,_TOKEN = identifiador};
             }
-            return new IdentificadorStamNode {  value = identifiador.Lexema,  pointer = pointer, tipo = tipo};
+            return new IdentificadorStamNode {  value = identifiador.Lexema,  pointer = pointer, tipo = tipo, _TOKEN = identifiador};
         }
 
         private List<StatementNode> OptionaListOfParams(List<StatementNode> izquierdo)
@@ -1708,51 +1739,51 @@ namespace Compiladores.Sintactico
         {
 
             if (Simbolo.Tipo == TokenTipos.RelacionalMenor)
-                return new RelacionalMenorNode();
+                return new RelacionalMenorNode() {  _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.RelacionalMenorOIgual)
-                return new RelacionalMenorOIgualNode();
+                return new RelacionalMenorOIgualNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.RelacionalMayor)
-                return new RelacionalMayorNode();
+                return new RelacionalMayorNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.RelacionalMayorOIgual)
-                return new RelacionalMayorOIgualNode();
+                return new RelacionalMayorOIgualNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.LogicosO)
-                return new LogicosONode();
+                return new LogicosONode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.LogicosY)
-                return new LogicosYNode();
+                return new LogicosYNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.YPorBit)
-                return new YporBitBinaryOperadorNode();
+                return new YporBitBinaryOperadorNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.OPorBit)
-                return new OPorBitNode();
+                return new OPorBitNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.CorrimientoDerecha)
-                return new CorrimientoDerechaNode();
+                return new CorrimientoDerechaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.CorrimientoIzquierda)
-                return new CorrimientoIzquierdaNode();
+                return new CorrimientoIzquierdaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.RelacionalIgual)
-                return new RelacionalIgualNode();
+                return new RelacionalIgualNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionSuma)
-                return new AutoOperacionSumaNode();
+                return new AutoOperacionSumaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionResta)
-                return new AutoOperacionRestaNode();
+                return new AutoOperacionRestaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionMultiplicacion)
-                return new AutoOperacionMultiplicacionNode();
+                return new AutoOperacionMultiplicacionNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionDivision)
-                return new AutoOperacionDivisionNode();
+                return new AutoOperacionDivisionNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionResiduo)
-                return new AutoOperacionResiduoNode();
+                return new AutoOperacionResiduoNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionYlogico)
-                return new AutoOperacionYlogicoNode();
+                return new AutoOperacionYlogicoNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionXor)
-                return new AutoOperacionXorNode();
+                return new AutoOperacionXorNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionOlogico)
-                return new AutoOperacionOlogicoNode();
+                return new AutoOperacionOlogicoNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.Asignacion)
-                return new AsignacionNode();
+                return new AsignacionNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionCorrimientoDerecha)
-                return new AutoOperacionCorrimientoDerechaNode();
+                return new AutoOperacionCorrimientoDerechaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.AutoOperacionCorrimientoIzquierda)
-                return new AutoOperacionCorrimientoIzquierdaNode();
+                return new AutoOperacionCorrimientoIzquierdaNode() { _TOKEN = Simbolo };
             else if (Simbolo.Tipo == TokenTipos.OExclusivoPorBit)
-                return new OExclusivoPorBitNode();
+                return new OExclusivoPorBitNode() { _TOKEN = Simbolo };
             else
                 return null;
 
@@ -1770,7 +1801,7 @@ namespace Compiladores.Sintactico
             {
                 var TokenActualTemp = _TokenActual;
                 ObtenerSiguienteTokenC();
-                BinaryOperatorNode expresionDerechar = (TokenActualTemp.Tipo == TokenTipos.OperacionSuma) ? expresionDerechar = new OperacionSumaNode() : expresionDerechar = new OperacionRestaNode();
+                BinaryOperatorNode expresionDerechar = (TokenActualTemp.Tipo == TokenTipos.OperacionSuma) ? expresionDerechar = new OperacionSumaNode() { _TOKEN = TokenActualTemp } : expresionDerechar = new OperacionRestaNode() { _TOKEN = TokenActualTemp };
                 var expresions = ExpressionMul();
                 expresionDerechar.OperadorDerecho = ExpressionAdicionPrima(expresions);
                 expresionDerechar.operador = TokenActualTemp.Lexema;
@@ -1796,8 +1827,8 @@ namespace Compiladores.Sintactico
             {
 
                 var TokenActualTemp = _TokenActual;
-                BinaryOperatorNode expresionDerechar = (TokenActualTemp.Tipo == TokenTipos.OperacionMultiplicacion) ? expresionDerechar = new OperacionMultiplicacionNode() :
-                    (TokenActualTemp.Tipo == TokenTipos.OperacionDivision) ? expresionDerechar = new OperacionDivisionNode() : expresionDerechar = new OperacionDivisionResiduoNode();
+                BinaryOperatorNode expresionDerechar = (TokenActualTemp.Tipo == TokenTipos.OperacionMultiplicacion) ? expresionDerechar = new OperacionMultiplicacionNode() { _TOKEN = TokenActualTemp } :
+                    (TokenActualTemp.Tipo == TokenTipos.OperacionDivision) ? expresionDerechar = new OperacionDivisionNode() { _TOKEN = TokenActualTemp } : expresionDerechar = new OperacionDivisionResiduoNode() { _TOKEN = TokenActualTemp };
                 ObtenerSiguienteTokenC();
 
                 var expresionIzquierda = ExpressionUnary();
@@ -1853,13 +1884,13 @@ namespace Compiladores.Sintactico
 
             var token = _TokenActual;
             ObtenerSiguienteTokenC();
-            if (token.Tipo == TokenTipos.NegacionPorBit) return new NegacionPorBitNode { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPre { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.AutoOperacionDecremento) return new AutoOperacionDecrementoPre { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.YPorBit) return new YporBitNode { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.Negacion) return new NegacionNode { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.OperacionResta) return new NegativoNumeroNode { Value = token.Lexema };
-            if (token.Tipo == TokenTipos.OperacionMultiplicacion) return new OperdadorMultiplicacionUnaryNode { Value = token.Lexema };
+            if (token.Tipo == TokenTipos.NegacionPorBit) return new NegacionPorBitNode { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPre { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.AutoOperacionDecremento) return new AutoOperacionDecrementoPre { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.YPorBit) return new YporBitNode { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.Negacion) return new NegacionNode { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.OperacionResta) return new NegativoNumeroNode { Value = token.Lexema, _TOKEN = token };
+            if (token.Tipo == TokenTipos.OperacionMultiplicacion) return new OperdadorMultiplicacionUnaryNode { Value = token.Lexema, _TOKEN = token };
 
             return null;    
 
@@ -1928,9 +1959,9 @@ namespace Compiladores.Sintactico
             var tokenInODe = _TokenActual;
             ObtenerSiguienteTokenC();
             if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento)
-                return new AutoOperacionIncrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema };
+                return new AutoOperacionIncrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema, _TOKEN = identificador };
             else
-                return new AutoOperacionDecrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema };
+                return new AutoOperacionDecrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema, _TOKEN = identificador };
 
         }
 
@@ -1945,11 +1976,11 @@ namespace Compiladores.Sintactico
                 || _TokenActual.Tipo == TokenTipos.Punto)
             {
                 List<AccesoresNode> lista = new List<AccesoresNode>();
-                return IndexOrArrowAccess(_TOKEN.Lexema,lista);
+                return IndexOrArrowAccess(_TOKEN.Lexema,lista , null);
             }
             else
             {
-                return new IdentificadorNode {  value = _TOKEN.Lexema};
+                return new IdentificadorNode {  value = _TOKEN.Lexema, _TOKEN = _TOKEN};
             }
         }
         private ExpressionNode CallFunction(Token _TOKEN)
@@ -1963,7 +1994,7 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("Se esperaba ) ");
                 }
                 ObtenerSiguienteTokenC();
-                return new CallFuntionNode { identificador = _TOKEN.Lexema, ListaDeParametros = ListaExpressions };
+                return new CallFuntionNode { identificador = _TOKEN.Lexema, ListaDeParametros = ListaExpressions , _TOKEN = _TOKEN };
             }
             return null;
         }
@@ -1981,7 +2012,7 @@ namespace Compiladores.Sintactico
                 if(_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                     throw new SintanticoException("Se esperaba ;");
                 ObtenerSiguienteTokenC();
-                return new CallFunctionStamentNode { identificador = _TOKEN.Lexema, ListaDeParametros = ListaExpressions };
+                return new CallFunctionStamentNode { identificador = _TOKEN.Lexema, ListaDeParametros = ListaExpressions ,_TOKEN = _TOKEN};
             }
             return null;
         }
@@ -2000,10 +2031,12 @@ namespace Compiladores.Sintactico
             }
             return null;
         }
-        private ExpressionNode IndexOrArrowAccess(string identificador,List<AccesoresNode> acesores)
+        private ExpressionNode IndexOrArrowAccess(string identificador,List<AccesoresNode> acesores,List<ExpressionNode> pointer)
         {
+            var nombre = _TokenActual;
             if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
             {
+                var token = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var tamaño = EXPRESSION();
                 if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
@@ -2011,9 +2044,9 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("Se esperaba ] ");
                 }
                 ObtenerSiguienteTokenC();
-                acesores.Add(new ArrayAsesorNode{ tamaño = tamaño });
-                IndexOrArrowAccess(identificador, acesores);
-                return new IdentificadorNode { value = identificador, Asesores = acesores };
+                acesores.Add(new ArrayAsesorNode { tamaño = tamaño, _TOKEN = token });
+                IndexOrArrowAccess(identificador, acesores, null);
+                return new IdentificadorNode { value = identificador, Asesores = acesores, _TOKEN = nombre , pointer = pointer};
             }
             else if (_TokenActual.Tipo == TokenTipos.LogicaStruct || _TokenActual.Tipo == TokenTipos.Punto)
             {
@@ -2028,30 +2061,32 @@ namespace Compiladores.Sintactico
               
                 if (tipo.Tipo == TokenTipos.LogicaStruct)
                 {
-                    var Accesor = new LogicaStructNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema } };
+                    var Accesor = new LogicaStructNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema }, _TOKEN = tipo };
                     acesores.Add(Accesor);
-                    IndexOrArrowAccess(identificadorInterno.Lexema, Accesor.identificador.Asesores = new List<AccesoresNode>());
-                    return new IdentificadorNode { value = identificador, Asesores = acesores };
+                    IndexOrArrowAccess(identificadorInterno.Lexema, Accesor.identificador.Asesores = new List<AccesoresNode>(),null);
+                    return new IdentificadorNode { value = identificador, Asesores = acesores , _TOKEN = nombre, pointer = pointer};
                 }
                 else
                 {
-                    var Accesor = new PuntoNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema } };
+                    var Accesor = new PuntoNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema }, _TOKEN = tipo };
                     acesores.Add(Accesor);
-                    IndexOrArrowAccess(identificadorInterno.Lexema, Accesor.identificador.Asesores);
-                    return new IdentificadorNode { value = identificador, Asesores = acesores };
+                    IndexOrArrowAccess(identificadorInterno.Lexema, Accesor.identificador.Asesores, null);
+                    return new IdentificadorNode { value = identificador, Asesores = acesores, _TOKEN = nombre, pointer = pointer };
 
                 }
             }
 
-            return new IdentificadorNode { Asesores = acesores}; 
+            return new IdentificadorNode { value = identificador, Asesores = acesores, _TOKEN = nombre, pointer = pointer }; 
             
             
 
         }
         private IdentificadorStamNode IndexOrArrowAccessStament(string identificador, List<AccesoresNode> acesores)
         {
+            var nombre = _TokenActual;
             if (_TokenActual.Tipo == TokenTipos.LlaveIzquierdo)
             {
+                var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
                 var tamaño = EXPRESSION();
                 if (_TokenActual.Tipo != TokenTipos.LlaveDerecho)
@@ -2059,9 +2094,9 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("Se esperaba ] ");
                 }
                 ObtenerSiguienteTokenC();
-                acesores.Add(new ArrayAsesorNode { tamaño = tamaño });
+                acesores.Add(new ArrayAsesorNode { tamaño = tamaño , _TOKEN = tipo});
                 IndexOrArrowAccessStament(identificador, acesores);
-                return new IdentificadorStamNode { value = identificador, Asesores = acesores };
+                return new IdentificadorStamNode { value = identificador, Asesores = acesores, _TOKEN = nombre };
             }
             else if (_TokenActual.Tipo == TokenTipos.LogicaStruct || _TokenActual.Tipo == TokenTipos.Punto)
             {
@@ -2076,22 +2111,22 @@ namespace Compiladores.Sintactico
 
                 if (tipo.Tipo == TokenTipos.LogicaStruct)
                 {
-                    var Accesor = new LogicaStructNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema } };
+                    var Accesor = new LogicaStructNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema, _TOKEN = identificadorInterno }, _TOKEN = tipo };
                     acesores.Add(Accesor);
                     IndexOrArrowAccessStament(identificadorInterno.Lexema, Accesor.identificador.Asesores = new List<AccesoresNode>());
                     return new IdentificadorStamNode { value = identificador, Asesores = acesores };
                 }
                 else
                 {
-                    var Accesor = new PuntoNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema } };
+                    var Accesor = new PuntoNode { identificador = new IdentificadorNode { value = identificadorInterno.Lexema, _TOKEN = identificadorInterno } };
                     acesores.Add(Accesor);
                     IndexOrArrowAccessStament(identificadorInterno.Lexema, Accesor.identificador.Asesores);
-                    return new IdentificadorStamNode { value = identificador, Asesores = acesores };
+                    return new IdentificadorStamNode { value = identificador, Asesores = acesores , _TOKEN = nombre};
 
                 }
             }
 
-            return new IdentificadorStamNode { Asesores = acesores, value = identificador };
+            return new IdentificadorStamNode { Asesores = acesores, value = identificador, _TOKEN = nombre };
 
 
 

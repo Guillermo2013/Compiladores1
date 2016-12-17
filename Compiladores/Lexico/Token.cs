@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Compiladores
 {
-    class Token
+    public class Token
     {
         public TokenTipos Tipo { get; set; }
         public string Lexema { get; set; }

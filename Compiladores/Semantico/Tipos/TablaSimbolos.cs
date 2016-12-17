@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Implementacion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,11 @@ namespace Compiladores.Semantico.Tipos
     {
         public static TablaSimbolos _instance = null;
         public Dictionary<string, TiposBases> _variables;
+        public Dictionary<string, Value> _values;
         public TablaSimbolos()
         {
             _variables = new Dictionary<string, TiposBases>();
+            _values = new Dictionary<string, Value>();
         }
 
         public static TablaSimbolos Instance
@@ -32,6 +35,11 @@ namespace Compiladores.Semantico.Tipos
         public void DeclareVariable(string name, TiposBases type)
         {
             _variables.Add(name, type);
+            _values.Add(name, type.GetDefaultValue());  
+        }
+        public void SetVariableValue(string name, Value value)
+        {
+            _values[name] = value;
         }
 
         public TiposBases GetVariable(string name)
@@ -40,7 +48,12 @@ namespace Compiladores.Semantico.Tipos
                 return null;
             return _variables[name];
         }
-
+        public Value GetVariableValue(string name)
+        {
+            if (_values.Count == 0)
+                return null;
+            return _values[name];
+        }
         public bool VariableExist(string name)
         {
             if (_variables.Count == 0)

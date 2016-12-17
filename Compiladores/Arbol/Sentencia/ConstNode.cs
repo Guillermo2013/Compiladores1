@@ -29,21 +29,21 @@ namespace Compiladores.Arbol.Sentencia
                         existe = true;
                 };
                 if (existe == true)
-                    throw new SintanticoException("variable " + identificador + " ya existe");
+                    throw new SintanticoException("variable " + identificador + " ya existec fila "+ _TOKEN.Fila +" colummna " + _TOKEN.Columna);
                 if (existe == false) {
                     if (expresion != null)
                     {
                         var tipoevaluar = obtenerTipo(Tipo);
                         var expresionTipo = expresion.ValidateSemantic();
                         if (tipoevaluar.GetType() != expresionTipo.GetType())
-                            throw new SintanticoException(" no se puede asignar "+tipoevaluar + " con "+expresionTipo);
+                            throw new SintanticoException(" no se puede asignar "+tipoevaluar + " con "+expresionTipo+" fila "+ expresion._TOKEN.Fila +" columna " + expresion._TOKEN.Columna);
                         var constTipo = new ConstTipo();
                         constTipo.tipo = obtenerTipo(Tipo);
                         ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador, constTipo);
                     }
                     else
                     {
-                        throw new SintanticoException("la constantes se debe inicializar ");
+                        throw new SintanticoException("la constantes se debe inicializar fila "+ _TOKEN.Fila +" columna "+ _TOKEN.Columna);
                     }
                     
                     
@@ -74,6 +74,10 @@ namespace Compiladores.Arbol.Sentencia
           
             return null;
 
+        }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,27 @@ namespace Compiladores.Arbol.Sentencia
                     if (bloqueFalse != null)
                     bloqueFalse.ValidSemantic();
                 ContenidoStack.InstanceStack.Stack.Pop();
+            }
+        }
+        public override void Interpret()
+        {
+            var condition = (BoolValue)condicional.Interpret();
+            if (condition.Value)
+            {
+                foreach (var statementNode in BloqueCondicionalTrue)
+                {
+                    statementNode.Interpret();
+                }
+            }
+            else
+            {
+                if (BloqueCondicionalFalse != null)
+                {
+                    foreach (var statementNode in BloqueCondicionalFalse)
+                    {
+                        statementNode.Interpret();
+                    }
+                }
             }
         }
     }

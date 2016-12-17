@@ -14,5 +14,9 @@ namespace Compiladores.Arbol.Sentencia
             var expresion = returnExpression.ValidateSemantic(); 
             
             }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

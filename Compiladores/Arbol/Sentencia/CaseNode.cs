@@ -16,7 +16,7 @@ namespace Compiladores.Arbol.Sentencia
         public  TiposBases ValidSemanticReturn()
         {
             var condicionalTipo = condicional.ValidateSemantic();
-            if (condicionalTipo is IntTipo || condicionalTipo is StringTipo || condicionalTipo is FloatTipo
+            if (condicionalTipo is IntTipo || condicionalTipo is StringTipo || condicionalTipo is FloatTipo||condicionalTipo is CharTipo
                 || condicionalTipo is DateTipo || condicionalTipo is ConstTipo)
             {
                 foreach (StatementNode sentenciaAevaluar in BloqueCondicionalCase){
@@ -24,11 +24,15 @@ namespace Compiladores.Arbol.Sentencia
                 }
                 return condicionalTipo;
             }
-            throw new SemanticoException("la expresion debe ser booleana");
+            throw new SemanticoException("la expresion no debe ser de tipo "+ condicionalTipo+" " +condicional._TOKEN.Fila +" columna "+ condicional._TOKEN.Columna);
         }
         public override void ValidSemantic()
         {
 
+        }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
         }
        
     }

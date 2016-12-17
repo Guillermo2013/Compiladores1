@@ -21,7 +21,11 @@ namespace Compiladores.Arbol.BinaryOperador
                 if (expresion1 is IntTipo || expresion2 is IntTipo)
                     return new IntTipo();
             }
-            throw new SemanticoException("no se puede restar" + expresion1 + " con " + expresion2);
+            throw new SemanticoException("no se puede restar" + expresion1 + " con " + expresion2 + "fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+        }
+        public override Implementacion.Value Interpret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

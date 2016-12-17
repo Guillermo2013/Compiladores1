@@ -1,4 +1,6 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Arbol.Identificador;
+using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,33 @@ namespace Compiladores.Arbol.UnaryOperador
         public override TiposBases ValidateSemantic()
         {
             var expresion = Operando.ValidateSemantic();
-            if (expresion is StructTipo || expresion is ConstTipo || expresion is BooleanTipo || expresion is EnumTipo)
-                throw new Sintactico.SintanticoException("este tipo no puede incrementarse");
-            return expresion;
+            if (!(Operando is IdentificadorNode))
+                throw new SemanticoException("no se puede autoIncrementarLiterales literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+            if (expresion is FloatTipo || expresion is IntTipo || expresion is CharTipo || expresion is EnumTipo)
+                return expresion;
+            throw new Sintactico.SintanticoException("este tipo no puede decrementarse fila" + Operando._TOKEN.Fila + " columna " + Operando._TOKEN.Columna);
+        }
+        public override Implementacion.Value Interpret()
+        {
+             Value valorID = Operando.Interpret();
+            string nombre = " ";
+            if (Operando is IdentificadorNode)
+            {
+                nombre = (Operando as IdentificadorNode).value;
+                foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                    if (stack.VariableExist(nombre))
+                    {
+                        if (valorID is IntValue)
+                            stack.SetVariableValue(nombre, new IntValue { Value = ++(valorID as IntValue).Value});
+                        if (valorID is FloatValue)
+                            stack.SetVariableValue(nombre, new FloatValue { Value = ++(valorID as FloatValue).Value });
+                        if (valorID is CharValue)
+                            stack.SetVariableValue(nombre, new CharValue { Value = ++(valorID as CharValue).Value });  
+                    }
+            }
+          
+            return valorID;
+        }
         }
     }
-}
+

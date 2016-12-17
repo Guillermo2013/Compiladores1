@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -36,5 +37,22 @@ namespace Compiladores.Arbol.Sentencia
             ContenidoStack.InstanceStack.Stack.Pop();
 
         }
+        public override void Interpret()
+        {
+            var expresion = ExpresionDeclaracion.Interpret();
+            while (true)
+            {
+                if ((ExpresionCondicional.Interpret() as BoolValue).Value)
+                {
+                    foreach (var lista in BloqueCondicionalFor)
+                        lista.Interpret();
+                    var incremento = ExpresionIncremento.Interpret();
+                }
+                else
+                {
+                    break;
+                }
+            }
+         }
     }
 }

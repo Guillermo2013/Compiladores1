@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,10 @@ namespace Compiladores.Arbol.TiposDeDatos
         public override TiposBases ValidateSemantic()
         {
             return new BooleanTipo();
+        }
+        public override Implementacion.Value Interpret()
+        {
+            return new BoolValue { Value = valor };
         }
     }
 }

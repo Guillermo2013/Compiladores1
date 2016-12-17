@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Implementacion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ namespace Compiladores.Semantico.Tipos
         public override string ToString()
         {
             return "Const";
+        }
+        public override Value GetDefaultValue()
+        {
+            // throw new NotImplementedException();
+            return null;
         }
     }
 }

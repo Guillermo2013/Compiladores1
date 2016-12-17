@@ -31,7 +31,7 @@ namespace Compiladores.Arbol.Identificador
                     
             };
             if(existe == false)
-            throw new SemanticoException("la variable " + value + " no existe");
+            throw new SemanticoException("la variable " + value + " no existe fila "+ _TOKEN.Fila + " columna "+_TOKEN.Columna);
 
            if(tipo is ConstTipo){
                Type fieldsType = typeof(ConstTipo);
@@ -51,9 +51,9 @@ namespace Compiladores.Arbol.Identificador
                foreach (var accesores in Asesores)
                {
                    if (accesores is LogicaStructNode)
-                       throw new SintanticoException(value+"es un arreglo no una structura");
+                       throw new SintanticoException(value + "es un arreglo no una structura fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                    if(accesores is PuntoNode)
-                       throw new SintanticoException(value + "es un arreglo no una enum");
+                       throw new SintanticoException(value + "es un arreglo no una enum fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                    accesores.ValidSemantic();
                }
                if (bidimensional == true && Asesores.Count == 2)
@@ -61,13 +61,13 @@ namespace Compiladores.Arbol.Identificador
                if (bidimensional == true && Asesores.Count == 1)
                    return new ArrayTipo();
                if (bidimensional == false && Asesores.Count > 1)
-                   throw new SintanticoException("el elemento no es un arreglo de mas de una dimension");
+                   throw new SintanticoException("el elemento " + value + " no es un arreglo de mas de una dimension fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                if (bidimensional == false && Asesores.Count == 1 && unidimensional == true)
                    return tipodeArray;
                if (bidimensional == false && Asesores.Count == 0 && unidimensional == true)
                    return new ArrayTipo();
                if (bidimensional == false && Asesores.Count == 0 && unidimensional == false)
-                   throw new SintanticoException("no es un arreglo ");
+                   throw new SintanticoException("el elemento " + value + " no es un arreglo");
                if (bidimensional == true && Asesores.Count == 0)
                    return new ArrayTipo();
            }
@@ -82,12 +82,12 @@ namespace Compiladores.Arbol.Identificador
                foreach (var accesores in Asesores)
                {
                    if (accesores is LogicaStructNode)
-                       throw new SintanticoException(value + "es un enum no una structura");
+                       throw new SintanticoException(value + "es un enum no una structura fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                    if (accesores is ArrayAsesorNode)
-                       throw new SintanticoException(value + "es un enum no una arreglo");
+                       throw new SintanticoException(value + "es un enum no una arreglo fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                }
                if(Asesores.Count > 1)
-                   throw new SintanticoException(value + " solo se puede acceder a un elemento de el enum");
+                   throw new SintanticoException(value + " solo se puede acceder a un elemento de el enum fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
 
                Type fieldsTypeAcessor = typeof(PuntoNode);
                FieldInfo[] fieldsAcessor = fieldsTypeAcessor.GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -107,24 +107,23 @@ namespace Compiladores.Arbol.Identificador
                }
                return new StringTipo();
            }
-           if (tipo.GetType() is StructTipo)
+           if (tipo is StructTipo)
            {
                Type fieldsType = typeof(StructTipo);
                FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
-               Dictionary<string, TiposBases> enumeracion = (Dictionary<string, TiposBases>)fields[0].GetValue(tipo);
+               Dictionary<string, TiposBases> enumeracion = (Dictionary<string, TiposBases>)fields[1].GetValue(tipo);
                if (Asesores == null)
                    return new StructTipo();
                foreach (var accesores in Asesores)
                {
-                   if (accesores is PuntoNode)
-                       throw new SintanticoException(value + "es un struct no una enum");
+                   
                    if (accesores is ArrayAsesorNode)
-                       throw new SintanticoException(value + "es un struct no una arreglo");
+                       throw new SintanticoException(value + "es un struct no una arreglo  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                }
                if (Asesores.Count > 1)
-                   throw new SintanticoException(value + " solo se puede acceder a un elemento de el struct");
+                   throw new SintanticoException(value + " solo se puede acceder a un elemento de el struct  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
 
-               Type fieldsTypeAcessor = typeof(LogicaStructNode);
+               Type fieldsTypeAcessor = (Asesores[0] is LogicaStructNode) ? typeof(LogicaStructNode) : typeof(PuntoNode);
                FieldInfo[] fieldsAcessor = fieldsTypeAcessor.GetFields(BindingFlags.Public | BindingFlags.Instance);
                 var elementoDestruct = fieldsAcessor[0].GetValue(Asesores[0]);
                 var elementoId = elementoDestruct.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -145,7 +144,7 @@ namespace Compiladores.Arbol.Identificador
                         if (bidimensional == true && acesores.Count == 1)
                             return  new ArrayTipo();
                         if (bidimensional == false && acesores.Count > 1)
-                            throw new SintanticoException("el elemento no es un arreglo de mas de una dimension");
+                            throw new SintanticoException("el elemento "+id+"no es un arreglo de mas de una dimension fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
                         if (bidimensional == false && acesores.Count == 1 && unidimensional == true )
                             return tipodeArray;
                         if (bidimensional == false && acesores.Count == 0 && unidimensional == true)
@@ -161,10 +160,33 @@ namespace Compiladores.Arbol.Identificador
                     }
                     
                 }
-                throw new SintanticoException(value + " no es un elemento de el struct");
+                
+                throw new SintanticoException(value + " no es un elemento de el struct fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+           }
+           if (tipo is MulpilicadorOperdadorReferenciaTipo)
+           {
+               if (pointer == null)
+                   throw new SintanticoException(value + " es un apuntador usar * previamente fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+               return tipo;
+           }
+           else
+           {
+
+               if (Asesores == null || Asesores.Count == 0)
+                   return tipo;
+
+
+               else
+               {
+                   throw new SintanticoException(value + " no es un elemento de el struct o un arreglo fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+               }
            }
 
-            return tipo;
+          
+        }
+        public override Implementacion.Value Interpret()
+        {
+            throw new NotImplementedException();
         }
         
     }

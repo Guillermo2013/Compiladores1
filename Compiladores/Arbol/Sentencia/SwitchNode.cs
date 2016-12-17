@@ -14,21 +14,27 @@ namespace Compiladores.Arbol.Sentencia
         public List<CaseNode> BloqueCondicionalCase;
         public override void ValidSemantic()
         {
+            ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
             var condicionalEvaluado = condicional.ValidateSemantic();
            if(!(condicionalEvaluado is EnumTipo) && !(condicionalEvaluado is StructTipo) && !(condicionalEvaluado is VoidTipo))
             foreach (var cases in BloqueCondicionalCase){
-                ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
+               
                if(!(cases is DefaultCaseNode)){
                 var caseEvaluado = cases.ValidSemanticReturn();
                 if (condicionalEvaluado.GetType() != caseEvaluado.GetType())
-                  throw new Sintactico.SintanticoException("el tipo de lo cases debe ser igual a la condicional");
+                  throw new Sintactico.SintanticoException("el tipo de lo cases debe ser igual a la condicional fila " +cases._TOKEN.Fila +" columna "+cases._TOKEN.Columna);
               }
               else
                   cases.ValidSemantic();
-               ContenidoStack.InstanceStack.Stack.Pop();
+              
             }
            else
-            throw new Sintactico.SintanticoException("no se permite la este tipo en condicional "+ condicionalEvaluado);
+            throw new Sintactico.SintanticoException("no se permite la este tipo en condicional "+ condicionalEvaluado +" fila "+ condicional._TOKEN.Fila+"columna"+condicional._TOKEN.Columna );
+           ContenidoStack.InstanceStack.Stack.Pop();
+        }
+        public override void Interpret()
+        {
+            throw new NotImplementedException();
         }
     }
 }

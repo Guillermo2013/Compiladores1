@@ -14,5 +14,8 @@ namespace Compiladores.Arbol.UnaryOperador
         {
             OperandoStament.ValidSemantic();
         }
+        public override void Interpret()
+        {
+        }
     }
 }
