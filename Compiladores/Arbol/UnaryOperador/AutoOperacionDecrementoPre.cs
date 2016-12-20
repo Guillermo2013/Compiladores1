@@ -46,6 +46,13 @@ namespace Compiladores.Arbol.UnaryOperador
                 }
             return valorID;
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo = "--"+Operando.GenerarCodigo() ;
+            return codigo;
+        }
     }
 
 }

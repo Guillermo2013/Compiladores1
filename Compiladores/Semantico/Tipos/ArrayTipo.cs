@@ -19,7 +19,7 @@ namespace Compiladores.Semantico.Tipos
         }
         public override Value GetDefaultValue()
         {
-            return new IntValue();
+            return new ArrayValue() { Value = new Value[0] };
         }
 
     }

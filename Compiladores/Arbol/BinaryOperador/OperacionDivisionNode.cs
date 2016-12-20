@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,32 @@ namespace Compiladores.Arbol.BinaryOperador
                 if (expresion1 is IntTipo || expresion2 is IntTipo)
                     return new IntTipo();
             }
-            throw new SemanticoException("no se puede restar" + expresion1 + " con " + expresion2 + "fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+            throw new SemanticoException("no se puede dividir" + expresion1 + " con " + expresion2 + "fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
         }
         public override Implementacion.Value Interpret()
         {
-            throw new NotImplementedException();
+            var leftV = OperadorIzquierdo.Interpret();
+            var rightV = OperadorDerecho.Interpret();
+
+            if (leftV is FloatValue && rightV is FloatValue)
+                return new FloatValue { Value = (leftV as FloatValue).Value / (rightV as FloatValue).Value };
+            if (leftV is IntValue && rightV is FloatValue)
+                return new FloatValue { Value = (leftV as IntValue).Value / (rightV as FloatValue).Value };
+            if (leftV is FloatValue && rightV is IntValue)
+                return new FloatValue { Value = (leftV as FloatValue).Value / (rightV as IntValue).Value };
+            if (leftV is IntValue && rightV is IntValue)
+                return new FloatValue { Value = (leftV as IntValue).Value / (rightV as IntValue).Value };
+            return null;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "/";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

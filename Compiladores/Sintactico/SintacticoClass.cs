@@ -15,10 +15,10 @@ using Compiladores.Arbol.Accesores;
 
 namespace Compiladores.Sintactico
 {
-    class SintacticoClass
+    public class SintacticoClass
     {
          private Lexico lexico;
-        private Token _TokenActual;
+        public Token _TokenActual;
         private Dictionary<string, int> _variables;
         public SintacticoClass(Lexico Lexico)
         {
@@ -65,10 +65,9 @@ namespace Compiladores.Sintactico
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaStruct || _TokenActual.Tipo == TokenTipos.PalabraReservadaConst || _TokenActual.Tipo == TokenTipos.PalabraReservadaBreak ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaContinue || _TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva
                 || _TokenActual.Tipo == TokenTipos.PalabraReservadaReturn || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
-                || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong
-                )
+                || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion  ||_TokenActual.Tipo == TokenTipos.PalabraReservadaPrintF ||_TokenActual.Tipo == TokenTipos.PalabraReservadaScanf         )
             {
                
                 var statement = SpecialSentence();
@@ -88,8 +87,8 @@ namespace Compiladores.Sintactico
 
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
+               )
             {
                 return SPECIALDECLARATION();
             }
@@ -146,6 +145,30 @@ namespace Compiladores.Sintactico
             {
                 return Return();
             }
+            else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaPrintF)
+            {
+                ObtenerSiguienteTokenC();
+                var expresionValor = EXPRESSION();
+                if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    throw new Exception("Se esperaba un ;");
+                ObtenerSiguienteTokenC();
+
+                return new PrintFNode { Value = expresionValor };
+            }
+            else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaScanf)
+            {
+                ObtenerSiguienteTokenC();
+                if (_TokenActual.Tipo == TokenTipos.Identificador)
+                    throw new Exception("Se esperaba un Id");
+                var lexemeId = _TokenActual.Lexema;
+
+                ObtenerSiguienteTokenC();
+                if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    throw new Exception("Se esperaba un ;");
+                ObtenerSiguienteTokenC();
+
+                return new ReadNode { Variable = new IdentificadorNode{  value = lexemeId } };
+            }
             return null;
         }
 
@@ -172,8 +195,8 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                  _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                 _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                 _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaPrintF || _TokenActual.Tipo == TokenTipos.PalabraReservadaScanf 
+                )
             {
                 var declaracion = GeneralDeclaration();
                 return TypeOfDeclarationForFunction(declaracion);
@@ -199,7 +222,9 @@ namespace Compiladores.Sintactico
             else
             {
                 var token = _TokenActual;
-                var identificador = new IdentificadorStamNode { inicializacion = ValueForId()[0], pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador , _TOKEN = token};
+                var value = ValueForId();
+              
+                var identificador = new IdentificadorStamNode { inicializacion = (value != null)? value[0]: null, pointer = declaracion.pointer, tipo = declaracion.tipo, value = declaracion.identificador , _TOKEN = token};
                 var declaracionTotal = MultiDeclaration(declaracion.tipo, identificador);
                 if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
                 {
@@ -225,9 +250,9 @@ namespace Compiladores.Sintactico
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaStruct || _TokenActual.Tipo == TokenTipos.PalabraReservadaConst || _TokenActual.Tipo == TokenTipos.PalabraReservadaBreak ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaContinue || _TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaEnum || _TokenActual.Tipo == TokenTipos.Directiva
                 || _TokenActual.Tipo == TokenTipos.PalabraReservadaVoid || _TokenActual.Tipo == TokenTipos.AutoOperacionIncremento || _TokenActual.Tipo == TokenTipos.AutoOperacionDecremento
-                || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong
+                || _TokenActual.Tipo == TokenTipos.OperacionMultiplicacion 
                 || _TokenActual.Tipo == TokenTipos.PalabraReservadaExtern
 
                )
@@ -247,8 +272,8 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate 
+              )
             {
                 return DECLARATION();
             }
@@ -347,7 +372,31 @@ namespace Compiladores.Sintactico
                 }
 
             }
-            return null;
+            else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaPrintF)
+            {
+                ObtenerSiguienteTokenC();
+                var expresionValor = EXPRESSION();
+                if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    throw new Exception("Se esperaba un ;");
+                ObtenerSiguienteTokenC();
+
+                return new PrintFNode { Value = expresionValor };
+            }
+            else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaScanf)
+            {
+                ObtenerSiguienteTokenC();
+                if (_TokenActual.Tipo == TokenTipos.Identificador)
+                    throw new Exception("Se esperaba un Id");
+                var lexemeId = _TokenActual.Lexema;
+
+                ObtenerSiguienteTokenC();
+                if (_TokenActual.Tipo != TokenTipos.FinalDeSentencia)
+                    throw new Exception("Se esperaba un ;");
+                ObtenerSiguienteTokenC();
+
+                return new ReadNode { Variable = new IdentificadorNode{  value = lexemeId } };
+            }//For
+                return null;
         }
 
         private StatementNode CONTINUE()
@@ -497,7 +546,7 @@ namespace Compiladores.Sintactico
                 var tipo = _TokenActual;
                 if (_TokenActual.Tipo != TokenTipos.PalabraReservadaInt && _TokenActual.Tipo != TokenTipos.PalabraReservadaFloat &&
                _TokenActual.Tipo != TokenTipos.PalabraReservadaChar && _TokenActual.Tipo != TokenTipos.PalabraReservadaBool && _TokenActual.Tipo != TokenTipos.PalabraReservadaString &&
-               _TokenActual.Tipo != TokenTipos.PalabraReservadaDate && _TokenActual.Tipo != TokenTipos.PalabraReservadaLong)
+               _TokenActual.Tipo != TokenTipos.PalabraReservadaDate)
                 {
                     throw new SintanticoException("se esperaba un tipo de dato");
                 }
@@ -628,8 +677,8 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
+               )
             {
                 return DeclarationOfStruct();
             }
@@ -676,7 +725,7 @@ namespace Compiladores.Sintactico
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+               )
             {
                 return DeclarationOfStruct();
             }
@@ -785,7 +834,8 @@ namespace Compiladores.Sintactico
             {
                 var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
-                if (tipo.Tipo == TokenTipos.AutoOperacionIncremento) return new AutoOperacionIncrementoPos { Value = tipo.Lexema, _TOKEN = tipo };
+                if (tipo.Tipo == TokenTipos.AutoOperacionIncremento)
+                    return new AutoOperacionIncrementoPos { Value = tipo.Lexema, _TOKEN = tipo };
                 else return new AutoOperacionDecrementoPos { Value = tipo.Lexema, _TOKEN = tipo };
             }
             else if (_TokenActual.Tipo == TokenTipos.Asignacion
@@ -916,7 +966,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
             {
                 var token = _TokenActual;
                 var tipoDeclaracion = _TokenActual.Lexema;
@@ -1056,7 +1106,8 @@ namespace Compiladores.Sintactico
                     throw new SintanticoException("es esperaba { ");
                 }
                 ObtenerSiguienteTokenC();
-                var listadecaso = ListOfCase();
+                var listadecasos = new List<CaseNode>();
+                var listadecaso = ListOfCase(listadecasos);
                 if (_TokenActual.Tipo != TokenTipos.CorcheteDerecho)
                 {
                     throw new SintanticoException("es esperaba } ");
@@ -1067,19 +1118,18 @@ namespace Compiladores.Sintactico
             return null;
         }
 
-        private List<CaseNode> ListOfCase()
+        private List<CaseNode> ListOfCase(List<CaseNode> listadecasos)
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaCase)
             {
                 var caso = CASE();
-                var listadecasos = ListOfCase();
+                ListOfCase(listadecasos);
                 listadecasos.Insert(0, caso);
                 return listadecasos;
             }
             else if (_TokenActual.Tipo == TokenTipos.PalabraReservadaDefault)
             {
                 var caso = DefaultCase();
-                var listadecasos = new List<CaseNode>();
                 listadecasos.Add(caso);
                 return listadecasos;
             }
@@ -1244,8 +1294,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                 _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                _TokenActual.Tipo == TokenTipos.PalabraReservadaDate)
             {
                 var declaracion = GeneralDeclaration();
                 return TypeOfDeclaration(declaracion);
@@ -1256,8 +1305,7 @@ namespace Compiladores.Sintactico
         {
             if (_TokenActual.Tipo == TokenTipos.PalabraReservadaInt || _TokenActual.Tipo == TokenTipos.PalabraReservadaFloat ||
                   _TokenActual.Tipo == TokenTipos.PalabraReservadaChar || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool || _TokenActual.Tipo == TokenTipos.PalabraReservadaString ||
-                  _TokenActual.Tipo == TokenTipos.PalabraReservadaDate || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong)
+                  _TokenActual.Tipo == TokenTipos.PalabraReservadaDate )
             {
                 var tipo = _TokenActual;
                 ObtenerSiguienteTokenC();
@@ -1572,8 +1620,6 @@ namespace Compiladores.Sintactico
                  || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool
                  || _TokenActual.Tipo == TokenTipos.PalabraReservadaString
                  || _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
-                 || _TokenActual.Tipo == TokenTipos.PalabraReservadaDouble
-                 || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong
                  || _TokenActual.Tipo == TokenTipos.PalabraReservadaVoid
 )
             {
@@ -1661,7 +1707,6 @@ namespace Compiladores.Sintactico
                     || _TokenActual.Tipo == TokenTipos.PalabraReservadaBool
                     || _TokenActual.Tipo == TokenTipos.PalabraReservadaString
                     || _TokenActual.Tipo == TokenTipos.PalabraReservadaDate
-                    || _TokenActual.Tipo == TokenTipos.PalabraReservadaLong
                     || _TokenActual.Tipo == TokenTipos.PalabraReservadaVoid)
                 {
                     var tipo = _TokenActual;
@@ -1958,7 +2003,7 @@ namespace Compiladores.Sintactico
         {
             var tokenInODe = _TokenActual;
             ObtenerSiguienteTokenC();
-            if (_TokenActual.Tipo == TokenTipos.AutoOperacionIncremento)
+            if (tokenInODe.Tipo == TokenTipos.AutoOperacionIncremento)
                 return new AutoOperacionIncrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema, _TOKEN = identificador };
             else
                 return new AutoOperacionDecrementoPos { Operando = new IdentificadorNode { value = identificador.Lexema }, Value = tokenInODe.Lexema, _TOKEN = identificador };

@@ -21,5 +21,12 @@ namespace Compiladores.Arbol.UnaryOperador
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo = "&" + Operando.GenerarCodigo();
+            return codigo;
+        }
     }
 }

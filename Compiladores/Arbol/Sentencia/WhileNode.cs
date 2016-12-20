@@ -28,8 +28,8 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            var condition = condicional.Interpret();
-            while (((BoolValue)condition).Value)
+            
+            while (((BoolValue)condicional.Interpret()).Value)
             {
                 foreach (var statementNode in BloqueCondicionalWhile)
                 {
@@ -40,6 +40,17 @@ namespace Compiladores.Arbol.Sentencia
                         return;
                 }
             }
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "while ( ";
+
+            if (condicional != null)
+                codigo += condicional.GenerarCodigo() + ")\n{ \n";
+            foreach (var lista in BloqueCondicionalWhile)
+                codigo += lista.GenerarCodigo() + "\n";
+            codigo += "}";
+            return codigo;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Compiladores.Arbol.Identificador;
+using Compiladores.Implementacion;
 
 namespace Compiladores.Arbol.Sentencia
 {
@@ -120,7 +121,45 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            var structElemento = new StructValue();
+             
+            foreach (var elementos in bloqueStruct)
+            {
+                if (elementos is GeneralDeclarationNode)
+                {
+                   
+                    var elementoDeclaration = (elementos as GeneralDeclarationNode);
+                    structElemento.Value.Add(elementoDeclaration.identificador, obtenerTipo(elementoDeclaration.tipo).GetDefaultValue());
+                }
+                else
+                {
+                    var elementoDeclaration = (elementos as IdentificadorArrayNode);
+                    structElemento.Value.Add((elementoDeclaration.identificador as GeneralDeclarationNode).identificador, obtenerTipo((elementoDeclaration.identificador as GeneralDeclarationNode).tipo).GetDefaultValue());
+
+                }
+                 
+            }
+                    
+            if (asignacion != null)
+            {
+                int i = 0;
+                foreach (var elemento in asignacion)
+                {
+                    if (elemento.Interpret().GetType() == structElemento.Value.ToList()[i].Value.GetType())
+                        structElemento.Value[structElemento.Value.ToList()[i].Key] = elemento.Interpret();
+                    else
+                        throw new Semantico.SemanticoException("el orden de inicializacion no es el correcto en el struct fila" + _TOKEN.Fila + " columna" + _TOKEN.Columna);
+                    i++;
+                }
+            }
+            ContenidoStack.InstanceStack.Stack.Peek()._values.Add(variableNombre, structElemento);
+            var stack = ContenidoStack.InstanceStack.Stack;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+
+            return codigo;
         }
     }
 }

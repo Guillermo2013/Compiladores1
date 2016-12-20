@@ -32,8 +32,21 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            foreach (var stament in BloqueCondicionalCase)
+                stament.Interpret();
         }
-       
+        public override string GenerarCodigo()
+        {
+            string codigo = "case ";
+            if (condicional != null)
+                codigo += condicional.GenerarCodigo() + ":";
+            foreach (var lista in BloqueCondicionalCase)
+                codigo += lista.GenerarCodigo();
+            if(breakNode !=null)
+                codigo += breakNode.GenerarCodigo();
+
+            codigo += "\n";
+            return codigo;
+        }
     }
 }

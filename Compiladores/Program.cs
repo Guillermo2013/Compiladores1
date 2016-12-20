@@ -21,8 +21,8 @@ namespace Compiladores
              foreach (var statementNode in Arbol)
              {
                 statementNode.ValidSemantic();
-               
-                Console.WriteLine(statementNode);
+                statementNode.Interpret();
+                Console.WriteLine(statementNode.GenerarCodigo());
              }
              var s = ContenidoStack.InstanceStack.Stack;
             Console.ReadKey();    

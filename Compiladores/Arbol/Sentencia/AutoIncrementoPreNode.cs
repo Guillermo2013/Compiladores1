@@ -20,5 +20,16 @@ namespace Compiladores.Arbol.Sentencia
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+
+            if (operadador != null)
+            {
+                codigo += "--"+operadador.GenerarCodigo();
+            }
+            codigo += ";\n";
+            return codigo;
+        }
     }
 }

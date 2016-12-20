@@ -59,5 +59,24 @@ namespace Compiladores.Arbol.Sentencia
                 }
             }
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "if(";
+
+            if (condicional != null)
+                codigo += condicional.GenerarCodigo() + "){\n ";
+            foreach (var lista in BloqueCondicionalTrue)
+                codigo += lista.GenerarCodigo()+"\n";
+            codigo += "}";
+            if (BloqueCondicionalFalse != null)
+            {
+                codigo += "else {";
+                foreach (var lista in BloqueCondicionalFalse)
+                    codigo += lista.GenerarCodigo() + "\n";
+                codigo += "}";
+            }
+
+            return codigo;
+        }
     }
 }

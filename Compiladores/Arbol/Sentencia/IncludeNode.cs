@@ -17,5 +17,15 @@ namespace Compiladores.Arbol.Sentencia
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "#include ";
+
+            if (direccion != null)
+                codigo += '\"' + direccion + '\"'+ "\n";
+            
+
+            return codigo;
+        }
     }
 }

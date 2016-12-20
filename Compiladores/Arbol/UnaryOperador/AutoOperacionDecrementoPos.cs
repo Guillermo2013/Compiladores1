@@ -7,6 +7,7 @@ using Compiladores.Arbol;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Arbol.Identificador;
+using Compiladores.Implementacion;
 namespace Compiladores.Arbol.UnaryOperador
 {
     public class AutoOperacionDecrementoPos : UnaryOperadorNode
@@ -23,8 +24,32 @@ namespace Compiladores.Arbol.UnaryOperador
         }
         public override Implementacion.Value Interpret()
         {
-            var value = Operando.Interpret();
+            Value valorID = Operando.Interpret();
+            string nombre = " ";
+            if (Operando is IdentificadorNode)
+            {
+                nombre = (Operando as IdentificadorNode).value;
+                foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                    if (stack.VariableExist(nombre))
+                    {
+                        if (valorID is IntValue)
+                            stack.SetVariableValue(nombre, new IntValue { Value = (valorID as IntValue).Value-- });
+                        if (valorID is FloatValue)
+                            stack.SetVariableValue(nombre, new FloatValue { Value = (valorID as FloatValue).Value-- });
+                        if (valorID is CharValue)
+                            stack.SetVariableValue(nombre, new CharValue { Value = (valorID as CharValue).Value-- });
+                    }
+            }
+            
+            return valorID;
 
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo = Operando.GenerarCodigo() + "--";
+            return codigo;
         }
     }
 }

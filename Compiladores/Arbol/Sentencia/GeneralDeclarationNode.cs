@@ -74,8 +74,20 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+  
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
 
+            if (tipo != null)
+                codigo += tipo + " ";
+            
+            if (identificador != null)
+                codigo += identificador + " ";
+            
+            
+            return codigo;
+        }
     }
 }

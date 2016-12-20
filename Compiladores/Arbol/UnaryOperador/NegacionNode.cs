@@ -26,5 +26,12 @@ namespace Compiladores.Arbol.UnaryOperador
                 return new BoolValue() { Value = !(valor as BoolValue).Value };
             return null;
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo =  "!"+Operando.GenerarCodigo() ;
+            return codigo;
+        }
     }
 }

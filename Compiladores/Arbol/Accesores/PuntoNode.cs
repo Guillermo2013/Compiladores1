@@ -14,5 +14,12 @@ namespace Compiladores.Arbol.Accesores
         {
           
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (identificador != null)
+                codigo = "." + identificador.GenerarCodigo();
+            return codigo;
+        }
     }
 }

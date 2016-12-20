@@ -1,4 +1,6 @@
-﻿using Compiladores.Arbol.UnaryOperador;
+﻿using Compiladores.Arbol.Identificador;
+using Compiladores.Arbol.UnaryOperador;
+using Compiladores.Implementacion;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
@@ -34,7 +36,7 @@ namespace Compiladores.Arbol.Sentencia
                 FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
                 var Lista = fields[0].GetValue(tipo);
                 var tipoRetorno = fields[1].GetValue(tipo);
-                var ListaFinal = (List<TiposBases>)Lista;
+                var ListaFinal = (Dictionary<string, TiposBases>)Lista;
                 if (ListaDeParametros.Count != ListaFinal.Count)
                 {
                     throw new SemanticoException("la cantidad de parametros no es la misma fila " + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
@@ -43,7 +45,7 @@ namespace Compiladores.Arbol.Sentencia
                 {
                     if (ListaDeParametros[index] is YporBitNode)
                     {
-                        if (!(ListaFinal[index] is MulpilicadorOperdadorReferenciaTipo))
+                        if (!(ListaFinal.ToList()[index].Value is MulpilicadorOperdadorReferenciaTipo))
                         {
                             throw new SemanticoException(" los paramentos son por refencia no por valor " + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
                         }
@@ -61,7 +63,7 @@ namespace Compiladores.Arbol.Sentencia
 
                         Type fieldsTypeReferencia2 = typeof(MulpilicadorOperdadorReferenciaTipo);
                         FieldInfo[] fieldsReferencia2 = fieldsTypeReferencia2.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                        var operadorReferencia2 = fieldsReferencia2[0].GetValue(ListaFinal[index]);
+                        var operadorReferencia2 = fieldsReferencia2[0].GetValue(ListaFinal.ToList()[index]);
                         if (tipoLLamarFuncion.GetType() != operadorReferencia2.GetType())
                         {
                             throw new SemanticoException(" el tipo de los parametros no es correcto" + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
@@ -81,7 +83,7 @@ namespace Compiladores.Arbol.Sentencia
                     }
                     else if (ListaDeParametros[index] is OperdadorMultiplicacionUnaryNode)
                     {
-                        if (!(ListaFinal[index] is YreferenciaTipo))
+                        if (!(ListaFinal.ToList()[index].Value is YreferenciaTipo))
                         {
                             throw new SemanticoException(" los paramentos son por refencia no por valor " + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
                         }
@@ -99,7 +101,7 @@ namespace Compiladores.Arbol.Sentencia
 
                         Type fieldsTypeReferencia2 = typeof(YreferenciaTipo);
                         FieldInfo[] fieldsReferencia2 = fieldsTypeReferencia2.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                        var operadorReferencia2 = fieldsReferencia2[0].GetValue(ListaFinal[index]);
+                        var operadorReferencia2 = fieldsReferencia2[0].GetValue(ListaFinal.ToList()[index]);
                         if (tipoLLamarFuncion.GetType() != operadorReferencia2.GetType())
                         {
                             throw new SemanticoException(" el tipo de los parametros no es correcto" + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
@@ -118,7 +120,7 @@ namespace Compiladores.Arbol.Sentencia
 
 
                     }
-                    else if (ListaFinal[index].GetType() != ListaDeParametros[index].ValidateSemantic().GetType())
+                    else if (ListaFinal.ToList()[index].Value.GetType() != ListaDeParametros[index].ValidateSemantic().GetType())
                     {
                         throw new SemanticoException(identificador + "el orden de la declaracion es incorrenta debe ser o el tipo " + ListaDeParametros+" fila " + ListaDeParametros[0]._TOKEN.Fila + "columna " + ListaDeParametros[0]._TOKEN.Columna);
                     }
@@ -128,7 +130,57 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override Implementacion.Value Interpret()
         {
-            throw new NotImplementedException();
+            TiposBases tipo = null;
+            Value valorRetorno = null;
+            foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                if (stack.VariableExist(identificador))
+                    tipo = stack.GetVariable(identificador);
+
+            var TipoFuncion = (tipo as FuncionTipo);
+            var paramentros = TipoFuncion.listaParametros;
+            var sentencias = TipoFuncion.sentencias;
+            foreach (var parametro in paramentros)
+            {
+                ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(parametro.Key, parametro.Value);
+            }
+            var i = 0;
+            foreach (var parametrosInicial in ListaDeParametros)
+            {
+                dynamic parametro = parametrosInicial;
+                var parametroFuncion = paramentros.ToList()[i];
+                       ContenidoStack.InstanceStack.Stack.Peek().SetVariableValue(paramentros.ToList()[i].Key, parametro.Interpret());
+                    i++;
+            }
+            ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
+            foreach (var sentencia in sentencias)
+            {
+
+                if (sentencia is ReturnNode)
+                {
+                    valorRetorno = (sentencia as ReturnNode).InterpetReturm();
+                }
+                else
+                {
+                    sentencia.ValidSemantic();
+                    sentencia.Interpret();
+                }
+            }
+            ContenidoStack.InstanceStack.Stack.Pop();
+          
+                return valorRetorno;
+            
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (identificador != null)
+                codigo += identificador + "(";
+            foreach (var lista in ListaDeParametros)
+                codigo += lista.GenerarCodigo();
+            codigo += ")";
+
+            codigo += ";\n";
+            return codigo;
         }
     }
 }

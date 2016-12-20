@@ -15,7 +15,14 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+           
+        }
+        public override string GenerarCodigo()
+        {
+
+           var codigo = "break;\n";
+
+            return codigo;
         }
     }
 }

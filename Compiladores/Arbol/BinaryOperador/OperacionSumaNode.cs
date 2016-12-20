@@ -64,8 +64,20 @@ namespace Compiladores.Arbol.BinaryOperador
                 return new StringValue { Value = (rightV as StringValue).Value + (leftV as IntValue).Value };
             if (rightV is IntValue && leftV is StringValue)
                 return new StringValue { Value = (rightV as IntValue).Value + (leftV as StringValue).Value };
+            if (leftV is IntValue && rightV is IntValue)
+                return new IntValue { Value = (leftV as IntValue).Value + (rightV as IntValue).Value };
             return null;
 
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "+";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

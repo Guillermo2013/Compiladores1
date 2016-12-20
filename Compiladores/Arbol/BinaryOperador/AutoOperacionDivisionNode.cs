@@ -15,21 +15,26 @@ namespace Compiladores.Arbol.BinaryOperador
         public override TiposBases ValidateSemantic()
         {
             
-            var Derecho = OperadorDerecho.ValidateSemantic();
+            var expresion1 = OperadorDerecho.ValidateSemantic();
             if (OperadorIzquierdo == null)
-                return Derecho;
+                return expresion1;
             if (!(OperadorIzquierdo is IdentificadorNode))
                 throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
-            var Izquierdo = OperadorIzquierdo.ValidateSemantic();
+            var expresion2 = OperadorIzquierdo.ValidateSemantic();
 
-            if (!(OperadorIzquierdo is Identificador.IdentificadorNode))
-                 throw new SemanticoException("No se debe de asignar a un identificador fila" + _TOKEN.Fila+" columna " +_TOKEN.Columna);
+            if (expresion1 is IntTipo && expresion2 is FloatTipo)
+                return new FloatTipo();
+            if (expresion1 is FloatTipo && expresion2 is IntTipo)
+                return new FloatTipo();
+            if (expresion1 is FloatTipo && expresion2 is FloatTipo)
+                return new FloatTipo();
+            if (expresion1 is IntTipo && expresion2 is IntTipo)
+                return new IntTipo();
+           
 
-            if(Izquierdo is BooleanTipo || Izquierdo is EnumTipo || Izquierdo is StructTipo||
-                Derecho is BooleanTipo || Derecho is EnumTipo || Derecho is StructTipo)
-                throw new SemanticoException("El tipo no puede ser divido fila" + OperadorDerecho._TOKEN.Fila );
-       
-            throw new SemanticoException("No se puede dividir"+Izquierdo+" con " + Derecho+" fila" + _TOKEN.Fila+" columna " +_TOKEN.Columna);
+
+
+            throw new SemanticoException("No se puede dividir" + expresion1 + " con " + expresion2 + " fila" + _TOKEN.Fila + " columna " + _TOKEN.Columna);
         }
         public override Implementacion.Value Interpret()
         {
@@ -69,6 +74,16 @@ namespace Compiladores.Arbol.BinaryOperador
                     valorID = stack.GetVariableValue(nombre);
                 }
             return valorID;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "/=";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

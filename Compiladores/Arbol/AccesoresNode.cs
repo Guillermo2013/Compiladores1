@@ -19,5 +19,9 @@ namespace Compiladores.Arbol
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+            return "";
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Compiladores.Arbol.UnaryOperador;
+﻿using Compiladores.Arbol.Identificador;
+using Compiladores.Arbol.UnaryOperador;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Sintactico;
@@ -23,49 +24,47 @@ namespace Compiladores.Arbol.Sentencia
                 if (stack.VariableExist(identificador.identificador))
                     throw new SintanticoException("variable " + identificador.identificador + " existe fila "+identificador._TOKEN.Fila+" colunma" +identificador._TOKEN.Columna);
             }
-             List<TiposBases> listaParametros = new List<TiposBases>();
+             
+            Dictionary<string, TiposBases> listaParametros = new Dictionary<string, TiposBases>();
+        
            if(paramentros != null)
             foreach (var lista in paramentros)
             {
                 if (lista is YporBitStamentNode)
                 {
-                    Type fieldsType = typeof(YporBitStamentNode);
-                    FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                    var identificadorNode = fields[1].GetValue(lista);
-                    var identificadorOperando = identificadorNode.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                    var tipo = identificadorOperando[3].GetValue(identificadorNode);
+
+                    var identificadorNode = (lista as YporBitStamentNode).OperandoStament;
+                    var tipo = (identificadorNode as IdentificadorStamNode).tipo;
                     var referencia = new YreferenciaTipo();
-                    referencia.tipoReferencia = obtenerTipo((string)tipo);
-                    listaParametros.Add(referencia);
+                    referencia.tipoReferencia = obtenerTipo(tipo);
+                    listaParametros.Add( (identificadorNode as IdentificadorStamNode).value, referencia);
                 }
-                if (lista is Identificador.IdentificadorStamNode)
+                if (lista is IdentificadorStamNode)
                 {
-                    Type fieldsType = typeof(Identificador.IdentificadorStamNode);
-                    FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                    var tipo = fields[3].GetValue(lista);
-                    var referenciaApuntador = fields[1].GetValue(lista);
+
+                    var tipo = (lista as IdentificadorStamNode).tipo;
+                    var referenciaApuntador = (lista as IdentificadorStamNode).pointer;
                     if(referenciaApuntador != null){
                        var apuntador = new MulpilicadorOperdadorReferenciaTipo();
                         apuntador.tipoReferencia = obtenerTipo((string)tipo);
-                         listaParametros.Add(apuntador);
+                         listaParametros.Add((lista as IdentificadorStamNode).value , apuntador);
                     }
                     else{
-                        listaParametros.Add(obtenerTipo((string)tipo));
+                        listaParametros.Add((lista as IdentificadorStamNode).value,obtenerTipo(tipo));
                         
                     }
                 }
-                if (lista is Identificador.IdentificadorArrayNode)
+                if (lista is IdentificadorArrayNode)
                 {
-                    Type fieldsType = typeof(Identificador.IdentificadorArrayNode);
-                    FieldInfo[] fields = fieldsType.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                    var declaracion = fields[0].GetValue(lista);
-                   
-                    var tipo = declaracion.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                    var puntero = tipo[1].GetValue(declaracion);
-                    var unidimesional = fields[1].GetValue(lista);
-                    var bidimesional = fields[2].GetValue(lista);
+
+                    var declaracion = (lista as IdentificadorArrayNode).identificador;
+
+                    var tipo = (declaracion as GeneralDeclarationNode).tipo;
+                    var puntero = (declaracion as GeneralDeclarationNode).pointer;
+                    var unidimesional = (lista as IdentificadorArrayNode).unidimesionarioArray;
+                    var bidimesional = (lista as IdentificadorArrayNode).BidimesionarioArray;
                     var array = new ArrayTipo();
-                    array.tipo = obtenerTipo( (string)tipo[0].GetValue(declaracion));
+                    array.tipo = obtenerTipo(tipo);
                     array.unidimensional = (unidimesional != null)?true:false;
                     array.bidimensional = (bidimesional != null) ? true : false;
                
@@ -73,14 +72,15 @@ namespace Compiladores.Arbol.Sentencia
                     {
                         var apuntador = new MulpilicadorOperdadorReferenciaTipo();
                         apuntador.tipoReferencia = array;
-                        listaParametros.Add(apuntador);
+                        listaParametros.Add((declaracion as GeneralDeclarationNode).identificador, apuntador);
                     }
                     else
                     {
-                        listaParametros.Add(array);
+                        listaParametros.Add((declaracion as GeneralDeclarationNode).identificador,array);
 
                     }
                 }
+                
 
             }
             
@@ -89,7 +89,8 @@ namespace Compiladores.Arbol.Sentencia
                 var funcion = new VoidTipo();
                 if (paramentros != null)
                     funcion.listaParametros = listaParametros;
-                
+                if (declaracionDeFuncion != null)
+                    funcion.sentencias = declaracionDeFuncion;
                 ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador.identificador, funcion);
             }
             else
@@ -98,6 +99,7 @@ namespace Compiladores.Arbol.Sentencia
                 if (paramentros != null)
                     funcion.listaParametros = listaParametros;
                 funcion.retorno = obtenerTipo(identificador.tipo);
+                funcion.sentencias = declaracionDeFuncion;
                 ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador.identificador, funcion);
             }
              ContenidoStack.InstanceStack.Stack.Push(new TablaSimbolos());
@@ -116,7 +118,8 @@ namespace Compiladores.Arbol.Sentencia
 
                      lista.ValidSemantic();
                  }
-                 if (!(declaracionDeFuncion.Last() is ReturnNode))
+                 if(identificador.tipo != "void")
+                 if (!(declaracionDeFuncion[declaracionDeFuncion.Count-1] is ReturnNode))
                  {
                      throw new SemanticoException("la funcion " + identificador.identificador + " debe tener una funcion de retorno ");
                  }
@@ -152,7 +155,22 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            
+            if (identificador != null)
+                codigo += identificador.GenerarCodigo() + " (";
+            if(paramentros !=null)
+            foreach (var lista in paramentros)
+                codigo += lista.GenerarCodigo() + " ";
+            codigo += "){";
+            foreach (var lista in declaracionDeFuncion)
+                codigo += lista.GenerarCodigo() + "\n ";
+            codigo += "};";
+            return codigo;
         }
     }
     

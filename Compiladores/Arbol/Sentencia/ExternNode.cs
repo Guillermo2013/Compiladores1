@@ -20,6 +20,15 @@ namespace Compiladores.Arbol.Sentencia
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+           
+            var codigo = "\n";
+            
+              return codigo;
+        }
+        
     }
+        
     
 }

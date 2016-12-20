@@ -30,14 +30,24 @@ namespace Compiladores.Arbol.BinaryOperador
             var rightV = OperadorDerecho.Interpret();
 
             if (leftV is FloatValue && rightV is FloatValue)
-                return new FloatValue { Value = (leftV as FloatValue).Value / (rightV as FloatValue).Value };
+                return new FloatValue { Value = (leftV as FloatValue).Value % (rightV as FloatValue).Value };
             if (leftV is IntValue && rightV is FloatValue)
-                return new FloatValue { Value = (leftV as IntValue).Value / (rightV as FloatValue).Value };
+                return new FloatValue { Value = (leftV as IntValue).Value % (rightV as FloatValue).Value };
             if (leftV is FloatValue && rightV is IntValue)
-                return new FloatValue { Value = (leftV as FloatValue).Value / (rightV as IntValue).Value };
+                return new FloatValue { Value = (leftV as FloatValue).Value % (rightV as IntValue).Value };
             if (leftV is IntValue && rightV is IntValue)
-                return new FloatValue { Value = (leftV as IntValue).Value / (rightV as IntValue).Value };
+                return new IntValue { Value = (leftV as IntValue).Value % (rightV as IntValue).Value };
             return null;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "%";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

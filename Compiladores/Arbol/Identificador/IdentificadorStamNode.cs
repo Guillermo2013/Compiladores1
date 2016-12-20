@@ -1,4 +1,5 @@
 ﻿using Compiladores.Arbol.Accesores;
+using Compiladores.Implementacion;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Sintactico;
@@ -171,7 +172,63 @@ namespace Compiladores.Arbol.Identificador
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            if (inicializacion != null)
+            {
+                dynamic expresionValor = inicializacion.Interpret();
+                foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                    if (stack.VariableExist(value))
+                    {
+
+                        if (stack.GetVariableValue(value) is ArrayValue)
+                        {
+                            if (Asesores[0] is ArrayAsesorNode)
+                            {
+                                var tamaño = ((Asesores[0] as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value ;
+                                var tamañoDefinido = (stack.GetVariableValue(value) as ArrayValue).Value.Length;
+                                if (tamaño < tamañoDefinido)
+                                    throw new Semantico.SemanticoException("tamaño del arreglo es menos");
+                                (stack.GetVariableValue(value) as ArrayValue).Value[((Asesores[0] as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value] = expresionValor;
+                            }
+                        }
+                        else if (stack.GetVariableValue(value) is StructValue)
+                        {
+                            if (Asesores[0] is LogicaStructNode || Asesores[0] is PuntoNode)
+                            {
+                                foreach (var lista in (stack.GetVariableValue(value) as StructValue).Value.ToList())
+                                {
+                                    if (lista.Key == ((Asesores[0] as LogicaStructNode).identificador as IdentificadorNode).value)
+                                    {
+                                        if(lista.Value.GetType() == (expresionValor as ExpressionNode).Interpret().GetType()){
+                                        var arreglo = stack.GetVariableValue(value);
+                                        (arreglo as StructValue).Value[lista.Key] = (expresionValor as ExpressionNode).Interpret();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else { 
+                            stack.SetVariableValue(value, expresionValor);
+                        }
+                        
+                    }
+            }
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (tipo != null)
+                codigo += tipo +" ";
+            if (Asesores != null)
+             foreach (var asesores in Asesores)
+                codigo += asesores.GenerarCodigo();
+            
+            if (value != null)
+                codigo += value;
+            codigo += "=";
+            if(inicializacion != null)
+                codigo += inicializacion.GenerarCodigo();
+            codigo += ";";
+            return codigo;
         }
     }
 }

@@ -20,5 +20,11 @@ namespace Compiladores.Arbol.TiposDeDatos
         {
             return new StringValue { Value = valor };
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = '\"' + valor + '\"';
+
+            return codigo;
+        }
     }
 }

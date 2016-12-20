@@ -1,4 +1,7 @@
-﻿using Compiladores.Implementacion;
+﻿using Compiladores.Arbol.BinaryOperador;
+using Compiladores.Arbol.Identificador;
+using Compiladores.Arbol.UnaryOperador;
+using Compiladores.Implementacion;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
@@ -39,20 +42,42 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            var expresion = ExpresionDeclaracion.Interpret();
-            while (true)
+            if(ExpresionDeclaracion != null)
+            ExpresionDeclaracion.Interpret();
+            while ((ExpresionCondicional.Interpret() as BoolValue).Value)
             {
-                if ((ExpresionCondicional.Interpret() as BoolValue).Value)
+               var incremento =  ExpresionIncremento.Interpret();
+                foreach (var statementNode in BloqueCondicionalFor)
                 {
-                    foreach (var lista in BloqueCondicionalFor)
-                        lista.Interpret();
-                    var incremento = ExpresionIncremento.Interpret();
+                    statementNode.Interpret();
+                    if (statementNode is BreakNode)
+                        break;
+                    if (statementNode is ReturnNode)
+                        return;
                 }
-                else
-                {
-                    break;
-                }
+                if(ExpresionIncremento is AutoOperacionDecrementoPre||ExpresionIncremento is AutoOperacionDecrementoPos||
+                    ExpresionIncremento is AutoOperacionIncrementoPre||ExpresionIncremento is AutoOperacionIncrementoPos)
+                foreach(var stack in ContenidoStack.InstanceStack.Stack)
+                    if(stack.VariableExist(((ExpresionDeclaracion as AsignacionNode).OperadorIzquierdo as IdentificadorNode).value))
+                        stack.SetVariableValue(((ExpresionDeclaracion as AsignacionNode).OperadorIzquierdo as IdentificadorNode).value, incremento);
+               
             }
          }
+        public override string GenerarCodigo()
+        {
+            string codigo = "for ( ";
+            if (ExpresionDeclaracion != null)
+                codigo += ExpresionDeclaracion.GenerarCodigo() + ";";
+            if (ExpresionCondicional != null)
+                codigo += ExpresionCondicional.GenerarCodigo() + ";";
+            if (ExpresionIncremento != null)
+                codigo += ExpresionIncremento.GenerarCodigo() + ";){\n";
+
+            foreach (var lista in BloqueCondicionalFor)
+                codigo += lista.GenerarCodigo() + "\n";
+            codigo += "};\n";
+
+            return codigo;
+        }
     }
 }

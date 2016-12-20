@@ -54,7 +54,18 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "enum";
+            if (identificador != null)
+                codigo += identificador+"{";
+            foreach (var lista in ListaEnum)
+                codigo += lista.GenerarCodigo() + "\n";
+            codigo += "};\n";
+            
+              return codigo;
         }
     }
 }

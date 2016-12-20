@@ -13,5 +13,7 @@ namespace Compiladores.Arbol
         public abstract TiposBases ValidateSemantic();
         public Token _TOKEN;
         public abstract Value Interpret();
+        public abstract string GenerarCodigo(); 
+
     }
 }

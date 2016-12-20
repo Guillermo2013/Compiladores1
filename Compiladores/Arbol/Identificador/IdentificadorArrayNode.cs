@@ -8,6 +8,7 @@ using Compiladores.Arbol.Sentencia;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Semantico;
 using Compiladores.Sintactico;
+using Compiladores.Implementacion;
 namespace Compiladores.Arbol.Identificador
 {
    public class IdentificadorArrayNode:StatementNode
@@ -54,6 +55,7 @@ namespace Compiladores.Arbol.Identificador
                     ContenidoStack.InstanceStack.Stack.Peek().DeclareVariable(identificador.identificador , arreglo);
             }
             
+            
         }
         private TiposBases obtenerTipo(String tipo)
         {
@@ -82,7 +84,59 @@ namespace Compiladores.Arbol.Identificador
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            foreach (var Stack in ContenidoStack.InstanceStack.Stack)
+            {
+                if (Stack.VariableExist(identificador.identificador))
+                {
+                    if (Stack.VariableExist(identificador.identificador))
+                    {
+                       var tipo = Stack.GetVariableValue(identificador.identificador);
+                        if (unidimesionarioArray != null)
+                            Array.Resize(ref (Stack.GetVariableValue(identificador.identificador) as ArrayValue).Value, ((unidimesionarioArray as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value+1);
+                    }
+                }
+                
+                
+             }
+             foreach (var Stack in ContenidoStack.InstanceStack.Stack)
+            {
+                if (Stack.VariableExist(identificador.identificador))
+                {
+                    if (Stack.VariableExist(identificador.identificador))
+                    {
+                       
+                        if (inicializacion != null)
+                        {
+                            int i = 0;
+                            foreach (var expresiones in inicializacion)
+                            {
+                                var valor = expresiones.Interpret();
+                               (Stack._values[identificador.identificador] as ArrayValue).Value[i] = valor;
+                                i++;  
+                            }
+
+                        }
+                    }
+                }
+             }
+
+            }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (identificador != null)
+                codigo += identificador.GenerarCodigo();
+            if (unidimesionarioArray != null)
+                codigo += unidimesionarioArray.GenerarCodigo();
+            if (BidimesionarioArray != null)
+                codigo += BidimesionarioArray.GenerarCodigo();
+            codigo += "=";
+            if(inicializacion != null)
+            foreach (var inicio in inicializacion)
+                codigo += inicio.GenerarCodigo();
+            codigo += ";";
+            return codigo;
+        }
         }
     }
-}
+

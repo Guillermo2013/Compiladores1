@@ -1,5 +1,7 @@
-﻿using Compiladores.Arbol.Identificador;
+﻿using Compiladores.Arbol.Accesores;
+using Compiladores.Arbol.Identificador;
 using Compiladores.Arbol.UnaryOperador;
+using Compiladores.Implementacion;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
@@ -57,7 +59,9 @@ namespace Compiladores.Arbol.BinaryOperador
         }
         private TiposBases validarOperacionDivisionResiduoNode(TiposBases expresion1, TiposBases expresion2)
         {
-           
+
+            if (!(OperadorIzquierdo is IdentificadorNode))
+                throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
             if ((expresion1 is IntTipo || expresion1 is FloatTipo) && (expresion2 is FloatTipo || expresion2 is IntTipo))
                 if (expresion1.GetType() == expresion2.GetType())
                     return expresion1;
@@ -69,70 +73,141 @@ namespace Compiladores.Arbol.BinaryOperador
         }
         private TiposBases validarAutoOperacionMultiplicacion(TiposBases expresion1, TiposBases expresion2)
         {
+            if (!(OperadorIzquierdo is IdentificadorNode))
+                throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+          
             if ((expresion1 is IntTipo || expresion1 is FloatTipo) && (expresion2 is FloatTipo || expresion2 is IntTipo))
                 if (expresion1.GetType() == expresion2.GetType())
                     return expresion1;
             if (expresion1 is FloatTipo || expresion2 is FloatTipo)
                 return new IntTipo();
-            if (expresion1 is IntTipo && expresion1 is IntTipo)
+            if (expresion1 is IntTipo && expresion2 is IntTipo)
                 return new IntTipo();
             throw new SemanticoException("no se puede multiplicar" + expresion1 + " con " + expresion2 + " fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
         }
         private TiposBases validarAutoOperacionDivision(TiposBases expresion1, TiposBases expresion2) {
-            if ((expresion1 is IntTipo || expresion1 is FloatTipo) && (expresion2 is FloatTipo || expresion2 is IntTipo))
-                if (expresion1.GetType() == expresion2.GetType())
-                    return expresion1;
-            if (expresion1 is FloatTipo || expresion2 is FloatTipo)
-                return new IntTipo();
-            if (expresion1 is IntTipo && expresion1 is IntTipo)
+            if (!(OperadorIzquierdo is IdentificadorNode))
+                throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+           
+            if (expresion1 is IntTipo && expresion2 is FloatTipo)
+                return new FloatTipo();
+            if (expresion1 is FloatTipo && expresion2 is IntTipo)
+                return new FloatTipo();
+            if (expresion1 is FloatTipo && expresion2 is FloatTipo)
+                return new FloatTipo();
+            if (expresion1 is IntTipo && expresion2 is IntTipo)
                 return new IntTipo();
             throw new SemanticoException("no se puede dividir" + expresion1 + " con " + expresion2 + " fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
         }
         private TiposBases validarAutoOperacionResta(TiposBases expresion1, TiposBases expresion2)
         {
 
+            if (!(OperadorIzquierdo is IdentificadorNode))
+                throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
             if ((expresion1 is IntTipo || expresion1 is FloatTipo) && (expresion2 is FloatTipo || expresion2 is IntTipo))
                 if (expresion1.GetType() == expresion2.GetType())
                     return expresion1;
             if (expresion1 is FloatTipo || expresion2 is FloatTipo)
                 return new FloatTipo();
-            if (expresion1 is IntTipo && expresion2 is IntTipo)
+            if (expresion1 is IntTipo && expresion1 is IntTipo)
                 return new IntTipo();
 
             throw new SemanticoException("no se puede restar" + expresion1 + " con " + expresion2 + " fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
         }
         private TiposBases validarAutoOperacionSuma(TiposBases expresion1, TiposBases expresion2)
         {
-            if (expresion1 is StructTipo || expresion2 is StructTipo || expresion1 is VoidTipo || expresion2 is VoidTipo)
-                throw new SemanticoException("no se puede sumar" + expresion1 + " con " + expresion2 + " fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+           
+            if (!(OperadorIzquierdo is IdentificadorNode))
+                throw new SemanticoException("no se puede asignar literales  fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
+           
+            if (expresion1 is StructTipo || expresion2 is StructTipo || expresion1 is VoidTipo || expresion2 is VoidTipo
+                 || expresion1 is EnumTipo || expresion2 is EnumTipo || expresion1 is DateTipo || expresion2 is DateTipo)
+                throw new SemanticoException("no se puede sumar" + expresion1 + " con " + expresion2 + "fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
 
             if (expresion1 is StringTipo || expresion2 is StringTipo)
-                if (!(expresion2 is EnumTipo) && !(expresion1 is EnumTipo))
-                    if (!(expresion2 is DateTipo) && !(expresion1 is DateTipo))
-                    return new StringTipo();
-
-            if (expresion1 is CharTipo && expresion2 is CharTipo)
                 return new StringTipo();
-            if (expresion1.GetType() == expresion2.GetType())
+            if (expresion1 == expresion2)
                 return expresion1;
             if ((expresion1 is IntTipo && expresion2 is FloatTipo) || (expresion2 is IntTipo && expresion1 is FloatTipo))
                 return new FloatTipo();
-            if (expresion1 is IntTipo && expresion2 is DateTipo)
-                return new IntTipo();
-            if (expresion2 is IntTipo && expresion1 is DateTipo)
-                return new DateTipo();
             if ((expresion1 is CharTipo && expresion2 is IntTipo) || (expresion2 is CharTipo && expresion1 is IntTipo))
                 return new IntTipo();
-            if ((expresion1 is BooleanTipo && expresion2 is IntTipo) || (expresion2 is BooleanTipo && expresion1 is IntTipo))
-                return new IntTipo();
-            
+           
             throw new SemanticoException("no se puede auto sumar " + expresion1 + " con " + expresion2 + " fila " + _TOKEN.Fila + " columna " + _TOKEN.Columna);
            
         }
 
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            var rightV = (expresion as AsignacionNode).OperadorDerecho;
+            Value rightValue = null;
+            if (rightV is IdentificadorNode)
+            {
+                rightValue = (rightV as IdentificadorNode).Interpret();
+            }else
+                rightValue = (expresion as AsignacionNode).OperadorDerecho.Interpret();
+            if (OperadorIzquierdo is IdentificadorNode)
+            {
+                var nombre = (OperadorIzquierdo as IdentificadorNode).value;
+                
+                foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                    if (stack.VariableExist(nombre))
+                    {
+                        var valorID = stack.GetVariableValue(nombre);
+                        if (stack.GetVariableValue(nombre) is ArrayValue)
+                        {
+                            if ((OperadorIzquierdo as IdentificadorNode).Asesores[0] is ArrayAsesorNode)
+                            {
+                                 var tamaño = (((OperadorIzquierdo as IdentificadorNode).Asesores[0] as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value;
+                                 var tamañoDefinido = (stack.GetVariableValue(nombre) as ArrayValue).Value.Length;
+                                if (tamaño > tamañoDefinido)
+                                    throw new Semantico.SemanticoException("tamaño del arreglo es menos");
+                                (stack.GetVariableValue(nombre) as ArrayValue).Value[(((OperadorIzquierdo as IdentificadorNode).Asesores[0] as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value] = rightValue;
+                            }
+                        }
+                        else if (stack.GetVariableValue(nombre) is StructValue)
+                        {
+                            if ((OperadorIzquierdo as IdentificadorNode).Asesores[0] is LogicaStructNode || (OperadorIzquierdo as IdentificadorNode).Asesores[0] is PuntoNode)
+                            {
+                                foreach (var lista in (stack.GetVariableValue(nombre) as StructValue).Value.ToList())
+                                {
+                                     var asesor = (OperadorIzquierdo as IdentificadorNode).Asesores[0] ;
+                                   string identificador = "";
+                                    if(asesor is PuntoNode)
+                                     identificador = (((OperadorIzquierdo as IdentificadorNode).Asesores[0] as PuntoNode).identificador as IdentificadorNode).value;
+                                    if(asesor is LogicaStructNode)
+                                        identificador = (((OperadorIzquierdo as IdentificadorNode).Asesores[0] as LogicaStructNode).identificador as IdentificadorNode).value;
+                                    if (lista.Key == identificador)
+                                    {
+                                        if (lista.Value.GetType() == rightValue.GetType())
+                                        {
+                                            var arreglo = stack.GetVariableValue(nombre);
+                                            (arreglo as StructValue).Value[lista.Key] = rightValue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (valorID.GetType() == rightValue.GetType())
+                                stack.SetVariableValue(nombre, rightValue);
+                        }
+                      }
+            }
+
+
+            var stack2 = ContenidoStack.InstanceStack.Stack;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+             if (expresion != null)
+                codigo += expresion.GenerarCodigo();
+            codigo += "; \n";
+            return codigo;
         }
     }
 }

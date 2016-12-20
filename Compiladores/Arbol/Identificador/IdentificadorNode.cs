@@ -1,5 +1,6 @@
 ﻿using Compiladores.Arbol.Accesores;
 using Compiladores.Arbol.BinaryOperador;
+using Compiladores.Implementacion;
 using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using Compiladores.Sintactico;
@@ -186,7 +187,35 @@ namespace Compiladores.Arbol.Identificador
         }
         public override Implementacion.Value Interpret()
         {
-            throw new NotImplementedException();
+            Value tipo = null;
+            foreach (var stack in ContenidoStack.InstanceStack.Stack)
+                if (stack.VariableExist(value))
+                {   
+                    tipo = stack.GetVariableValue(value);
+                    if (tipo is ArrayValue)
+                    {
+                        if (Asesores[0] is ArrayAsesorNode)
+                        {
+                            tipo = (tipo as ArrayValue).Value[((Asesores[0] as ArrayAsesorNode).tamaño.Interpret() as IntValue).Value];
+                        }
+                    }
+                }
+            
+            
+            return tipo;
+        }
+        public override string GenerarCodigo()
+        {
+            var codigo = "";
+            if (value != null)
+            {
+                codigo += value + " ";
+            }
+            if(Asesores != null)
+            foreach (var asesores in Asesores)
+                codigo += asesores.GenerarCodigo();
+           
+            return codigo;
         }
         
     }

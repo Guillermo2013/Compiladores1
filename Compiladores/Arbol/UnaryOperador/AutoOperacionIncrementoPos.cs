@@ -23,7 +23,7 @@ namespace Compiladores.Arbol.UnaryOperador
         }
         public override Implementacion.Value Interpret()
         {
-             Value valorID = Operando.Interpret();
+            Value valorID = null;
             string nombre = " ";
             if (Operando is IdentificadorNode)
             {
@@ -31,16 +31,24 @@ namespace Compiladores.Arbol.UnaryOperador
                 foreach (var stack in ContenidoStack.InstanceStack.Stack)
                     if (stack.VariableExist(nombre))
                     {
+                        valorID = stack.GetVariableValue(nombre);
                         if (valorID is IntValue)
-                            stack.SetVariableValue(nombre, new IntValue { Value = ++(valorID as IntValue).Value});
+                            stack.SetVariableValue(nombre, new IntValue { Value = (valorID as IntValue).Value++ });
                         if (valorID is FloatValue)
-                            stack.SetVariableValue(nombre, new FloatValue { Value = ++(valorID as FloatValue).Value });
+                            stack.SetVariableValue(nombre, new FloatValue { Value = (valorID as FloatValue).Value++ });
                         if (valorID is CharValue)
-                            stack.SetVariableValue(nombre, new CharValue { Value = ++(valorID as CharValue).Value });  
+                            stack.SetVariableValue(nombre, new CharValue { Value = (valorID as CharValue).Value++ });  
                     }
             }
           
             return valorID;
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo = Operando.GenerarCodigo() + "++";
+            return codigo;
         }
         }
     }

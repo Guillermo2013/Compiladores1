@@ -27,5 +27,12 @@ namespace Compiladores.Arbol.UnaryOperador
                 return new FloatValue { Value = -(expresion as FloatValue).Value };
             return null;
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (Operando != null)
+                codigo = "-" + Operando.GenerarCodigo();
+            return codigo;
+        }
     }
 }

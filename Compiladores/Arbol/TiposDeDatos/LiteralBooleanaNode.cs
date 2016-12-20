@@ -20,5 +20,11 @@ namespace Compiladores.Arbol.TiposDeDatos
         {
             return new BoolValue { Value = valor };
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = valor.ToString();
+
+            return codigo;
+        }
     }
 }

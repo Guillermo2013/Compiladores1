@@ -22,5 +22,15 @@ namespace Compiladores.Arbol.BinaryOperador
             OperadorDerecho.Interpret();
             OperadorIzquierdo.Interpret();
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += ",";
+            if (OperadorDerecho != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            return codigo;
+        }
     }
 }

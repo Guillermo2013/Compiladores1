@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Compiladores
 {
-    class Lexico
+    public class Lexico
     {
         private string _codigoFuente;
         private int _columnaActual;
@@ -19,6 +19,7 @@ namespace Compiladores
         private Dictionary<string, TokenTipos> _simbolosAumentarODisminuir;
         private Dictionary<string, TokenTipos> _simbolosRelacionales;
         private Dictionary<string, TokenTipos> _simbolosLogicos;
+        private string code;
      
 
         public Lexico(string _codigoFuente)
@@ -118,8 +119,11 @@ namespace Compiladores
              _palabrasReservadas.Add("string", TokenTipos.PalabraReservadaString);
            _palabrasReservadas.Add("include", TokenTipos.PalabraReservadaInclude);
             _palabrasReservadas.Add("return", TokenTipos.PalabraReservadaReturn);
+            _palabrasReservadas.Add("printf", TokenTipos.PalabraReservadaPrintF);
     
         }
+
+      
 
         public Token ObtenerSiguienteToken()
         {

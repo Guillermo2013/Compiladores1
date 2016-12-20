@@ -75,9 +75,23 @@ namespace Compiladores.Arbol.Sentencia
             return null;
 
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "const ";
+            if (Tipo != null)
+                codigo += Tipo;
+            foreach (var lista in pointer)
+                codigo += lista.GenerarCodigo();
+            if (identificador != null)
+                codigo += identificador;
+            if (expresion != null)
+                codigo += expresion.GenerarCodigo() + ";";
+            codigo += "\n";
+            return codigo;
+        }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+             
         }
     }
 }

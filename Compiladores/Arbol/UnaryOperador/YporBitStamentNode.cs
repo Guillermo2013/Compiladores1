@@ -17,5 +17,12 @@ namespace Compiladores.Arbol.UnaryOperador
         public override void Interpret()
         {
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperandoStament != null)
+                codigo = "&" + OperandoStament.GenerarCodigo();
+            return codigo;
+        }
     }
 }

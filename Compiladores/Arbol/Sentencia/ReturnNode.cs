@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compiladores.Implementacion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,21 @@ namespace Compiladores.Arbol.Sentencia
             }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+           
+        }
+        public Value InterpetReturm()
+        {
+            return returnExpression.Interpret();
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "return ";
+
+            if (returnExpression != null)
+                codigo += returnExpression.GenerarCodigo() + ";\n";
+
+
+            return codigo;
         }
     }
 }

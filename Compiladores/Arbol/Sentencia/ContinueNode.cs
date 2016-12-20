@@ -16,5 +16,12 @@ namespace Compiladores.Arbol.Sentencia
         {
             throw new NotImplementedException();
         }
+        public override string GenerarCodigo()
+        {
+            string codigo = "continue;";
+            ;
+            codigo += "\n";
+            return codigo;
+        }
     }
 }

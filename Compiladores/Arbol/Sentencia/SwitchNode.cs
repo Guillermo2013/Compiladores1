@@ -1,4 +1,5 @@
-﻿using Compiladores.Semantico;
+﻿using Compiladores.Implementacion;
+using Compiladores.Semantico;
 using Compiladores.Semantico.Tipos;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,49 @@ namespace Compiladores.Arbol.Sentencia
         }
         public override void Interpret()
         {
-            throw new NotImplementedException();
+            dynamic condicionalValue = condicional.Interpret();
+         
+            var defaultStatements = new List<StatementNode>();
+            foreach (var casos in BloqueCondicionalCase)
+            {
+                
+                if (casos is DefaultCaseNode)
+                {
+                    defaultStatements = (casos as DefaultCaseNode).BloqueCondicionalCase;
+                }
+                else
+                {
+                    dynamic casoValue = casos.condicional.Interpret();
+                    if (casoValue.Value == condicionalValue.Value)
+                    {
+                        foreach (var stamet in casos.BloqueCondicionalCase)
+                        {
+                            stamet.Interpret();
+                            if (stamet is BreakNode)
+                                return;
+                        }
+                        
+                    }
+                }
+                
+            
+            }
+                if(defaultStatements != null)
+                foreach (var stamet in defaultStatements)
+                    stamet.Interpret();
+
+
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "switch ( ";
+
+            if (condicional != null)
+                codigo += condicional.GenerarCodigo() + ")\n{ \n";
+            foreach (var lista in BloqueCondicionalCase)
+                codigo += lista.GenerarCodigo() + "\n";
+            codigo += "}";
+            return codigo;
         }
     }
 }

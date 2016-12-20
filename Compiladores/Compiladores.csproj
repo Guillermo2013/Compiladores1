@@ -11,6 +11,24 @@
     <AssemblyName>Compiladores</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/Test2/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +48,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>7F55E7CA89743128EA7BCA914525C40563E7CCD1</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Compiladores_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -103,6 +133,7 @@
     <Compile Include="Arbol\Sentencia\GeneralDeclarationNode.cs" />
     <Compile Include="Arbol\Sentencia\IfNode.cs" />
     <Compile Include="Arbol\Sentencia\IncludeNode.cs" />
+    <Compile Include="Arbol\Sentencia\PrintFNode.cs" />
     <Compile Include="Arbol\Sentencia\ReturnNode.cs" />
     <Compile Include="Arbol\Sentencia\StructNode.cs" />
     <Compile Include="Arbol\Sentencia\SwitchNode.cs" />
@@ -127,13 +158,16 @@
     <Compile Include="Arbol\UnaryOperador\OperdadorMultiplicacionUnaryNode.cs" />
     <Compile Include="Arbol\UnaryOperador\YporBitNode.cs" />
     <Compile Include="Arbol\UnaryOperador\YporBitStamentNode.cs" />
+    <Compile Include="Implementacion\ArrayValue.cs" />
     <Compile Include="Implementacion\BoolValue.cs" />
     <Compile Include="Implementacion\CharValue.cs" />
     <Compile Include="Implementacion\DateValue.cs" />
+    <Compile Include="Implementacion\EnumValue.cs" />
     <Compile Include="Implementacion\FloatValue.cs" />
     <Compile Include="Implementacion\IntValue.cs" />
     <Compile Include="Implementacion\StringValue.cs" />
-    <Compile Include="Implementacion\Value.cs" />
+    <Compile Include="Implementacion\StructValue.cs" />
+    <Compile Include="Lexico\Value.cs" />
     <Compile Include="Lexico\Lexico.cs" />
     <Compile Include="Lexico\LexicoException.cs" />
     <Compile Include="Program.cs" />
@@ -158,14 +192,33 @@
     <Compile Include="Semantico\Tipos\TablaSimbolos.cs" />
     <Compile Include="Semantico\Tipos\VoidTipo.cs" />
     <Compile Include="Semantico\Tipos\YreferenciaTipo.cs" />
+    <Compile Include="Arbol\Sentencia\ReadNode.cs" />
     <Compile Include="Sintactico\SintacticoClass.cs" />
-    <Compile Include="Sintactico\SintanticoException.cs" />
+    <Compile Include="SintanticoException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Compiladores_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="test.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

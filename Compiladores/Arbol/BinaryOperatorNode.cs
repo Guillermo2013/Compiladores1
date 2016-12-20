@@ -11,5 +11,6 @@ namespace Compiladores.Arbol
         public string operador { get; set; }
         public ExpressionNode OperadorDerecho ;
         public ExpressionNode OperadorIzquierdo;
+        
     }
 }

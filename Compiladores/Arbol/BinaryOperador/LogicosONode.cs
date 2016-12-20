@@ -24,7 +24,18 @@ namespace Compiladores.Arbol.BinaryOperador
             dynamic left = OperadorIzquierdo.Interpret();
             dynamic right = OperadorDerecho.Interpret();
             return new BoolValue { Value = (left.Value || right.Value) };
-            
+
+
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "||";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

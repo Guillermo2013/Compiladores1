@@ -68,6 +68,17 @@ namespace Compiladores.Arbol.BinaryOperador
                     valorID = stack.GetVariableValue(nombre);
                 }
             return valorID;
+
+        }
+        public override string GenerarCodigo()
+        {
+            string codigo = "";
+            if (OperadorIzquierdo != null)
+                codigo += OperadorIzquierdo.GenerarCodigo();
+            codigo += "%=";
+            if (OperadorDerecho != null)
+                codigo += OperadorDerecho.GenerarCodigo();
+            return codigo;
         }
     }
 }

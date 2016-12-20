@@ -12,5 +12,6 @@ namespace Compiladores.Arbol
         public abstract void ValidSemantic();
         public Token _TOKEN = null;
         public abstract void Interpret();
+        public abstract string GenerarCodigo();
     }
 }
